@@ -1,0 +1,58 @@
+menu:
+  scope_out: Scope out
+  equipment: Equipment
+  approach: Approach
+  tools: Tools
+  weapons: Weapons
+  disturbation: Disturb
+  cuts: Cuts
+  heist: Heist
+  additional_loot: Additional loots
+  back: back
+  save: save
+equipment:
+  bolt_cutters: Bolt cutters
+  grappling_equipment: grappling
+  guard_uniform: Uniforms
+  guard_truck: Truck
+loots:
+  cash: Cash
+  weed: Weed
+  cocaine: Cocaine
+  gold: Gold
+  paints: Paints
+  tequila: Tequila
+  necklace: Necklace
+  bonds: Bonds
+  files: Files
+  diamond: Diamond
+  statue: Statue
+vehicles:
+  submarine: Kosatka
+  bomber: Alkonost
+  plane: Velum
+  copter: Annihilator
+  patrol_boat: Patrouille
+  smuggler_boat: Longfin
+tools:
+  demolition_charges: Demolition charges
+  acetylene_torch: Acetylene torch
+  safe_code: Safe code
+  plasma_cutter: Plasma cutter
+  fingerprint: fingerprint scanner
+weapons:
+  shotgun: Shotgun
+  bullpup_rifle: Bullpup rifle
+  sniper: Sniper
+  smg: Smg
+  assault_riffle: Assault riffle
+  suppressors: Suppressors
+disturb:
+  weapons: Weapons
+  armor: Armor
+  support: Support
+cuts:
+  all_85: "Give all 85%"
+heist:
+  loot_value: Loot value
+  bagsize: Bagsize

@@ -1,0 +1,57 @@
+menu:
+  scope_out: Repérage
+  equipment: équipement
+  approach: Approche
+  tools: Matériel
+  weapons: Arsenal
+  disturbation: Perturbations
+  cuts: Répartition gains
+  heist: Braquage
+  additional_loot: Objectifs secondaires
+  back: retour
+  save: enregistrer
+equipment:
+  bolt_cutters: Pinces
+  grappling_equipment: grappins
+  guard_uniform: Uniformes
+  guard_truck: Camion
+loots:
+  cash: argent
+  weed: canabis
+  cocaine: cocaine
+  gold: or
+  paints: peintures
+  tequila: Tequila Sinsimito
+  necklace: Collier de rubis
+  bonds: Bons au porteur
+  files: Dossiers sur Madrazo
+  diamond: Statue de panthère
+vehicles:
+  submarine: kosatka
+  bomber: alkonost
+  plane: velum
+  copter: annihilator
+  patrol_boat: Patrouille
+  smuggler_boat: Longfin
+tools:
+  demolition_charges: charges explosives
+  acetylene_torch: chalumeau
+  safe_code: code coffre
+  plasma_cutter: découp. plasma
+  fingerprint: "duplicateur d'empreintes"
+weapons:
+  shotgun: agresseur
+  bullpup_rifle: conspirateur
+  sniper: fine gâchette
+  smg: saboteur
+  assault_riffle: "tireur d'élite"
+  suppressors: silencieux
+disturb:
+  weapons: armes
+  armor: protections
+  support: soutien aérien
+cuts:
+  all_85: "Tous 85"
+heist:
+  loot_value: Valeur loot
+  bagsize: taille sac

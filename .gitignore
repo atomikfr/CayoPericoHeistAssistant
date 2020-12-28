@@ -1,0 +1,10 @@
+*.class
+/target
+/.project
+/.settings
+/.classpath
+*.jar
+/comm
+/dependency-reduced-pom.xml
+*.zip
+/id_rsa
