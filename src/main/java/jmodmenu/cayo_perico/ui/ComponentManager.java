@@ -57,7 +57,7 @@ public class ComponentManager {
 		return button;
 	}
 	
-	private void add(Component component) {
+	void add(Component component) {
 		components.add(component);
 		panel.add(component);
 	}

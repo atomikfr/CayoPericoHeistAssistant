@@ -50,7 +50,7 @@ public class GtaProcess {
 		globals = Global.globalFrom( sigAdd3Rip.apply(SIG_GLOBALS) );
 		log.info("Globals at {}", globals);
 		
-		statManager = new StatManager(this::globals);
+		statManager = new StatManager(this::globals, slotNumPlayer());
 		
 		netPlayerManager = NetPlayerManager.fromPointer(
 			sigAdd3Rip.apply(SIG_NET_MANAGER).indirect64()

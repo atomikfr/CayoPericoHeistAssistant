@@ -4,7 +4,7 @@ menu:
   approach: Approche
   tools: Matériel
   weapons: Arsenal
-  disturbation: Perturbations
+  disturb: Perturbations
   cuts: Répartition gains
   heist: Braquage
   main_loot: Objectif principal
@@ -12,6 +12,9 @@ menu:
   back: retour
   save: enregistrer
   customize: Emplacements
+  hard_true: Mode Difficile Activé
+  hard_false: Mode Normal
+  confirm_difficulty_toggle: Changer le mode de difficulté ?
 equipment:
   bolt_cutters: Pinces
   grappling_equipment: grappins
@@ -22,7 +25,7 @@ loots:
   weed: canabis
   cocaine: cocaine
   gold: or
-  paints: peintures
+  paintings: peintures
   tequila: Tequila Sinsimito
   necklace: Collier de rubis
   bonds: Bons au porteur

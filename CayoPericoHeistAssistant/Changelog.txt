@@ -1,3 +1,14 @@
+# Version 0.10
+
+* Allow to change difficulty level
+* Allow to change stack value of additional loot type
+* Compute additional loot value
+* Fix Main loot value if hard mode enable
+* Fix potential issue in stat manager, allow stat modification for both character
+* (code) Split Menus in different classes
+* (code) rename some french method names
+
+
 # Version 0.9 
 
 30 Dec 2020

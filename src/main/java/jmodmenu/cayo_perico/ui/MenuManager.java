@@ -28,6 +28,7 @@ import jmodmenu.cayo_perico.model.SecondaryLoot;
 
 class MenuManager {
 	JPanel panel;
+	int fieldId;
 	
 	ComponentManager manager;
 	MenuManager(JPanel panel) {
@@ -91,16 +92,22 @@ class MenuManager {
 		return this;
 	}
 	
-	MenuManager addFields(Map<String, Integer> itemsConf, Consumer<List<JTextField>> fieldsCallback) {
+	MenuManager addFields(Map<String, ?> itemsConf, List<Field> fields) {
 		manager.y += 10;
 		
-		List<JTextField> fields = itemsConf
+		itemsConf
 			.entrySet()
 			.stream()
-			.map( e -> manager.addField(e.getKey(), e.getValue().toString()) )
-			.collect(Collectors.toList());
-		
-		if (fieldsCallback != null) fieldsCallback.accept( fields );
+			.map( e -> {
+				JTextField jTextField = manager.addField(e.getKey(), e.getValue().toString());
+				Field field = new Field();
+				field.component = jTextField;
+				field.name = e.getKey();
+				field.initialValue = e.getValue().toString();
+				field.id = fieldId++;
+				return field;
+			})
+			.forEach(fields::add);
 		
 		return this;
 	}
@@ -113,6 +120,7 @@ class MenuManager {
 	MenuManager clear() {
 		manager.clear();
 		manager.x = 10;
+		fieldId = 0;
 		return this;
 	}
 
@@ -228,4 +236,30 @@ class LootChooserEntry {
 	JCheckBox box;
 	LootType type;
 	int cpt;
+}
+
+class Field {
+	int id;
+	JTextField component;
+	String name;
+	String initialValue;
+	
+	boolean hasChanged() {
+		return !component.getText().equals(initialValue);
+	}
+	String value() {
+		return component.getText();
+	}
+	int intValue() {
+		if ( value().isEmpty() ) return 0;
+		
+		try {
+			return Integer.parseInt(value().trim());
+		} catch(NumberFormatException e) {
+			return 0;
+		}
+	}
+	public void set(String value) {
+		component.setText(value);
+	}
 }

@@ -184,9 +184,11 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	public void setMainLoot(MainLoot mainLoot) {}
 	
 	@Override
-	public int getLootStackValue(int playerIndex, LootType type) {
+	public int getStackLootValue(int playerIndex, LootType type) {
 		return 120000;
 	}
+	@Override
+	public void setStackLootValue(LootType lootType, int value) {}
 	
 	@Override
 	public int getScopedEquipment(int playerIndex) {
@@ -252,5 +254,9 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	}
 	
 	@Override
+	public void setHardMode(Boolean hardActivated) {}
+	
+	@Override
 	public void restartSubmarineComputer() {}
+	
 }

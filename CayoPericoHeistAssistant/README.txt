@@ -1,6 +1,6 @@
 
 __== Cayo Perico Heist Assistant ==__
-                           v 0.9
+                           v 0.10
 
 
 This is an external tool showing you the current state of "Cayo Perico" Heist
@@ -19,6 +19,7 @@ WARNING __________________________________________________
  - Java Runtime Environment >= 11
    suggested JRE: https://cdn.azul.com/zulu/bin/zulu11.43.55-ca-jdk11.0.9.1-win_x64.msi
    if you are running windows x64
+   or get a JDK from https://adoptopenjdk.net/releases.html
 
  - GTA5 Online v 1.52
 
@@ -39,7 +40,7 @@ WARNING __________________________________________________
    - Equipment
    Guard Uniform        : Yellow
    Grappling Equipement : Magenta
-   Bolt Cutters         : Light gray
+   Bolt Cutters         : Gray
    Guard Truck          : Pink
  
    - Additional Loot
@@ -51,6 +52,7 @@ WARNING __________________________________________________
 
  - The left menu allows you to get information about what is made during preparation.
    "Cuts" only works on YOUR heist before launching the mission.
+   Don't change cuts in game after setting in tool if total > 100%.
 
  - If you select YOUR player in list, you can change and save equipment, approach, scopped loot ...
    Beware when selecting a weapon, you MUST select "suppressors" also.
@@ -66,7 +68,6 @@ WARNING __________________________________________________
  - Compound loot placement are erroneous for now. 
    Still have to work on this.
 
- - "Hard mode" indicator does not work yet.
 
 ## Thanks ###########################
 

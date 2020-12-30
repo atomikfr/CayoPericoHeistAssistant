@@ -1,6 +1,8 @@
 package jmodmenu.cayo_perico.ui;
 
 import java.awt.Color;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -25,7 +27,8 @@ class LootManager {
 		return this;
 	}
 	
-	void setHardMode(boolean hard) {
+	JCheckBox hardCheckBox;
+	LootManager setHardMode(boolean hard) {
 		// manager.
 		ComponentStyle style = new ComponentStyle();
 		style.background = new Color(0x3c1a1a);
@@ -36,8 +39,8 @@ class LootManager {
 		styleBox.foreground = Color.WHITE;
 		styleBox.borderColor = Color.WHITE;
 		
-		
-		JCheckBox checkBox = new JCheckBox("HARD MODE", hard);
+		String difficultyLabel = I18n.txt("menu.hard_"+hard);
+		JCheckBox checkBox = new JCheckBox( difficultyLabel, hard);
 		checkBox.setIcon(new CheckBoxIcon(styleBox));
 		checkBox.setForeground( style.foreground );
 		checkBox.setBackground( style.background);
@@ -46,6 +49,19 @@ class LootManager {
 		checkBox.setLocation(665, 815);
 		checkBox.setSize(390, 55);
 		
-		panel.add(checkBox);
+		checkBox.setEnabled(false); // only enable if a callback function is set
+		
+		manager.add(checkBox);
+		hardCheckBox = checkBox;
+		return this;
 	}
+	
+	public void whenDifficultyToggle( Function<Boolean, Boolean> consumer ) {
+		hardCheckBox.setEnabled(true);
+		hardCheckBox.addActionListener( event -> {
+			boolean result = consumer.apply( hardCheckBox.isSelected() );
+			hardCheckBox.setSelected(result);
+		});
+	}
+	
 }

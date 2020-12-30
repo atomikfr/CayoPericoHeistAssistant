@@ -4,7 +4,7 @@ menu:
   approach: Approach
   tools: Tools
   weapons: Weapons
-  disturbation: Disturb
+  disturb: Disturb
   cuts: Cuts
   heist: Heist
   main_loot: Main loot
@@ -12,6 +12,9 @@ menu:
   back: back
   save: save
   customize: locations
+  hard_true: Hard Mode Activated
+  hard_false: Normal Mode
+  confirm_difficulty_toggle: Change difficulty mode ?
 equipment:
   bolt_cutters: Bolt cutters
   grappling_equipment: grappling
@@ -22,7 +25,7 @@ loots:
   weed: Weed
   cocaine: Cocaine
   gold: Gold
-  paints: Paints
+  paintings: Paintings
   tequila: Tequila
   necklace: Necklace
   bonds: Bonds

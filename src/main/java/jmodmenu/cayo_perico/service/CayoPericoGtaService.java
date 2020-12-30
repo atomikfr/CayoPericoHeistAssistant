@@ -1,6 +1,7 @@
 package jmodmenu.cayo_perico.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,7 +54,9 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 		if ( name.startsWith("MP0") && slotPlayer > 0 ) {
 			name = "MP"+slotPlayer+name.substring(3);
 		}
-		setStat(Utils.joaat(name), value);
+		int joaat = Utils.joaat(name);
+		log.debug("Setting Stat[{}] Joaat[{}] to Value[{}]", name, joaat, value);
+		setStat(joaat, value);
 	}
 	
 	public void setStat(Integer joaat, Integer value) {
@@ -285,6 +288,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 		int joaat = type == LootType.PAINTINGS ? 1775008747 : joaats[ type.ordinal() ];
 		setStat(joaat, value);
 		*/
+		if (value > 0) scopeOut();
 		String statName = scopeName(type, island);
 		setStat(statName, value);
 	}
@@ -307,6 +311,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	
 	@Override
 	public void scopeLoot(LootType type) {
+		scopeOut();
 		if ( type == LootType.PAINTINGS ) {
 			// copyLootToScope(17, 1775008747);
 			copyLootToScope(17, scopeName(type, false));
@@ -342,17 +347,19 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 		return val;
 	}
 	
+	private void scopeOut() {
+		if ( (getApproach(gta.localPlayerIndex()) & 1) == 0 ) {
+			// set scope_out
+			addApproach(1, 1);
+		}
+	}
+	
 	@Override
 	public void addScopedEquipment(int equipmentMask) {
 		int playerIndex = gta.localPlayerIndex();
 		Global global = glPerico(playerIndex).at(5);
 		long value = global.get() | equipmentMask;
-		
-		if ( (getApproach(playerIndex) & 1) == 0 ) {
-			// set scope_out
-			addApproach(1, 1);
-		}
-		
+		if ( equipmentMask > 0 ) scopeOut();
 		setStat("MP0_H4CNF_BS_GEN", (int)value);
 		global.set(value);
 	}
@@ -429,7 +436,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	}
 	
 	@Override
-	public int getLootStackValue(int playerIndex, LootType type) {
+	public int getStackLootValue(int playerIndex, LootType type) {
 		// func_858 et suivante.
 		// Global_1706028[iParam0 /*53*/].f_5.f_10.f_23;
 		int offset = 19 + type.ordinal();
@@ -437,12 +444,36 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	}
 	
 	@Override
+	public void setStackLootValue(LootType lootType, int value) {
+		String statName = Arrays.asList(
+			"MP0_H4LOOT_CASH_V",
+			"MP0_H4LOOT_WEED_V",
+			"MP0_H4LOOT_COKE_V",
+			"MP0_H4LOOT_GOLD_V",
+			"MP0_H4LOOT_PAINT_V"
+		).get(lootType.ordinal());
+		setStat(statName, value);
+	}
+	
+	@Override
 	public boolean isHardMode(int playerIndex) {
+		// MPx_H4_PROGRESS 
 		long register = glPerico(playerIndex).at(1).get();
 		int mask = 1 << 12;
 		boolean hard = (register & mask) > 0;
 		log.debug("Hard mode register[{}] mask[{}] boolean[{}]", register, mask, hard);
 		return hard; 
+	}
+	
+	@Override
+	public void setHardMode(Boolean hardActivated) {
+		// MPx_H4_PROGRESS 
+		int playerIndex = gta.localPlayerIndex();
+		long register = glPerico(playerIndex).at(1).get();
+		int mask = 1 << 12;
+		register = hardActivated ? (register | mask) : (register & ~mask);
+		log.debug("Set Hard mode register[{}] boolean[{}]", register, mask, hardActivated);
+		setStat("MPx_H4_PROGRESS", (int) register);
 	}
 	
 	@Override

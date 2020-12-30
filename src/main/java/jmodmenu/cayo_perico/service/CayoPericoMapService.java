@@ -39,5 +39,8 @@ public interface CayoPericoMapService {
 	void setLootPosition(LootType type, boolean island, int value);
 	void setLootScope(LootType type, boolean b, int mask);
 	void setMainLoot(MainLoot mainLoot);
-	int getLootStackValue(int playerIndex, LootType type);
+	int getStackLootValue(int playerIndex, LootType type);
+	void setStackLootValue(LootType lootType, int value);
+	void setHardMode(Boolean hardActivated);
+
 }

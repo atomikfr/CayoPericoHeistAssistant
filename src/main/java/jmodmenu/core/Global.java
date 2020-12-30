@@ -50,6 +50,10 @@ public class Global extends RefPtr {
 		return ptr().writeLong(value);
 	}
 	
+	public boolean setInt(int value) {
+		return ptr().writeLong(Integer.toUnsignedLong(value));
+	}
+	
 	public boolean setString(String str, int maxLength) {
 		if ( str.length() > maxLength-1 ) {
 			str = str.substring(0, maxLength-1);
@@ -61,5 +65,7 @@ public class Global extends RefPtr {
 	public String toString() {
 		return String.format("Globals[%d] -> %s", index, ptr());
 	}
+
+
 	
 }
