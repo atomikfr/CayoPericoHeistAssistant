@@ -16,6 +16,9 @@ import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Ptr {
 	
 	private static Kernel32 kernel32 = Kernel32.INSTANCE;
@@ -193,6 +196,8 @@ public class Ptr {
 				.orElseThrow( () -> new RuntimeException("No process '"+processName+"' found") )
 				.intValue();
 		
+		log.info("Process {} found. Pid[{}]", processName, pid);
+		
 		// https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
 		int accessRight = 0x0010 | 0x0020 | 0x0008;
 		HANDLE handle = kernel32.OpenProcess(accessRight, false, pid);
@@ -215,8 +220,8 @@ public class Ptr {
 					if ( moduleName.equals(module.szModule()) ) {
 						baseAddress = module.modBaseAddr;
 						
-						System.out.println( "Module address : " + module.modBaseAddr );
-						System.out.println( "Module size    : " + module.modBaseSize );
+						log.debug( "Module address : {}", module.modBaseAddr );
+						log.debug( "Module size    : {}", module.modBaseSize );
 						
 						break;
 					}

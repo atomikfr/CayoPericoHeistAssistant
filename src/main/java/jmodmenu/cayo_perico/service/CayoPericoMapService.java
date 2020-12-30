@@ -11,7 +11,9 @@ import jmodmenu.cayo_perico.model.SecondaryIslandLoot;
 import jmodmenu.core.PlayerInfo;
 
 public interface CayoPericoMapService {
+	
 	List<PlayerInfo> getPlayersInfo();
+	
 	void setWeapon(int weaponIndex);
 	int getLocalPlayerIndex();
 	void addApproach(int approachMask, int setMask);
@@ -31,6 +33,11 @@ public interface CayoPericoMapService {
 	MainLoot getMainLoot(int playerIndex);
 	void restartSubmarineComputer();
 	boolean hasScopedLoot(int playerIndex, LootType type);
-	void scopeLoot(int playerIndex, LootType type);
+	void scopeLoot(LootType type);
 	boolean isHardMode(int playerIndex);
+	Integer getScopeData(int playerIndex, LootType type, boolean island);
+	void setLootPosition(LootType type, boolean island, int value);
+	void setLootScope(LootType type, boolean b, int mask);
+	void setMainLoot(MainLoot mainLoot);
+	int getLootStackValue(int playerIndex, LootType type);
 }

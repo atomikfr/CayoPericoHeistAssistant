@@ -1,0 +1,26 @@
+# Version 0.9 
+
+30 Dec 2020
+
+* Allow to change the main loot
+* Allow to set each type of secondary loot for each location
+* Stat edit now use the correct character MP "slot" (MP0/MP1)
+* Stat writing in a more efficient way, use a queue of stats
+* Disable window resize 
+* Add a logging system to CayoPericoHeistAssistant.log
+* Fix translation of statue (fr)
+* Code refactoring for a better maintenance
+
+
+# Version 0.8 
+
+Initial "public" release
+
+* Allow to select a connected player from session
+* Show position of each loot and each equipment on the map
+* Allow to set your scoping for equipment
+* Allow to set weapon
+* Allow to choose any vehicle approach
+* Allow to set Cuts for your heist
+* Allow to change the current loot value
+* Allow to set your bag size during any heist

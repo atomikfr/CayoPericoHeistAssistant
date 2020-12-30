@@ -1,6 +1,6 @@
 
 __== Cayo Perico Heist Assistant ==__
-                           v 0.8
+                           v 0.9
 
 
 This is an external tool showing you the current state of "Cayo Perico" Heist

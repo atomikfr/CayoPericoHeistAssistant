@@ -43,7 +43,7 @@ public class ComponentManager {
 		this.INIT_Y = this.y = y;
 	}
 	
-	public ComponentManager addButton(String title, Runnable action) {
+	public JButton addButton(String title, Runnable action) {
 		ComponentStyle style = styles.button;
 		JButton button = new JButton(title);
 		button.setForeground( style.foreground );
@@ -54,7 +54,7 @@ public class ComponentManager {
 		y += 30;
 		button.addActionListener( event -> action.run() );
 		add(button);
-		return this;
+		return button;
 	}
 	
 	private void add(Component component) {
@@ -148,6 +148,20 @@ public class ComponentManager {
 		components.clear();
 		y = INIT_Y;
 		return this;
+	}
+
+	public JLabel addLabel(String txt) {
+		ComponentStyle style = styles.boxValue;
+		JLabel label = new JLabel(txt);
+		label.setOpaque(true);
+		label.setForeground( style.foreground );
+		label.setBackground( style.background );
+		label.setLocation(x, y);
+		label.setSize(200, 30);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		y += 30;
+		add(label);
+		return label;
 	}
 	
 }

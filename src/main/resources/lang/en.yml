@@ -7,9 +7,11 @@ menu:
   disturbation: Disturb
   cuts: Cuts
   heist: Heist
+  main_loot: Main loot
   additional_loot: Additional loots
   back: back
   save: save
+  customize: locations
 equipment:
   bolt_cutters: Bolt cutters
   grappling_equipment: grappling
@@ -27,6 +29,24 @@ loots:
   files: Files
   diamond: Diamond
   statue: Statue
+loot_small:
+  cash: "$$$"
+  weed: Weed
+  cocaine: Coc.
+  gold: Gold
+location:
+  airstrip: Airstrip
+  north_dock: North Dock
+  main_dock: Main Dock
+  fields: Fields
+  compound: Compound
+  paint_0: West Room
+  paint_1: North Room
+  paint_2: East Room
+  paint_3: El Rubio Office
+  paint_4: El Rubio Office
+  paint_5: Basement
+  paint_6: Basement
 vehicles:
   submarine: Kosatka
   bomber: Alkonost
@@ -56,3 +76,5 @@ cuts:
 heist:
   loot_value: Loot value
   bagsize: Bagsize
+error:
+  no_process: "Error getting GTA process. Does it run ?"

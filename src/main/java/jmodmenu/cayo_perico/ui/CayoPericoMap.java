@@ -1,5 +1,7 @@
 package jmodmenu.cayo_perico.ui;
 
+import static jmodmenu.I18n.txt;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -13,10 +15,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,9 +30,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import static jmodmenu.I18n.txt;
-
 import jmodmenu.GtaProcess;
+import jmodmenu.I18n;
 import jmodmenu.cayo_perico.model.BoltCutters;
 import jmodmenu.cayo_perico.model.GrapplingEquipment;
 import jmodmenu.cayo_perico.model.GuardTruck;
@@ -39,9 +43,13 @@ import jmodmenu.cayo_perico.model.SecondaryLoot;
 import jmodmenu.cayo_perico.service.CayoPericoGtaService;
 import jmodmenu.cayo_perico.service.CayoPericoMapService;
 import jmodmenu.cayo_perico.service.CayoPericoMockService;
+import jmodmenu.cayo_perico.service.LootDataProvider;
 import jmodmenu.core.PlayerInfo;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CayoPericoMap {
 	
 	@Getter
@@ -93,25 +101,30 @@ public class CayoPericoMap {
 		reloadComputer.addActionListener( event -> service.restartSubmarineComputer() );
 		panel.add(reloadComputer);
 		
-		panel.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				Point p = e.getPoint();
-				switch(mapView) {
-				case ISLAND:
-					if ( new Rectangle(587, 668, 60, 55).contains(p) ) {
-						setView(MapView.COMPOUND);
-					}
-					break;
-				case COMPOUND:
-					if ( new Rectangle(33, 27, 200, 207).contains(p) ) {
-						setView(MapView.ISLAND);
-					}
-					break;
-				}
-			}
-		});
+		panel.addMouseListener( new MyMouseAdapter() );
 		
+	}
+	
+	class MyMouseAdapter extends MouseAdapter {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			Point p = e.getPoint();
+			Rectangle rect = null;
+			if ( mapView == MapView.ISLAND ) {
+				rect = new Rectangle(587, 668, 60, 55);
+				if ( rect.contains(p) ) {
+					setView(MapView.COMPOUND);
+				}
+				return;
+			}
+			if (mapView == MapView.COMPOUND ) {
+				rect = new Rectangle(33, 27, 200, 207);
+				if ( rect.contains(p) ) {
+					setView(MapView.ISLAND);
+				}
+				return;
+			}
+		}
 	}
 	
 	public void setView(MapView view) {
@@ -157,16 +170,23 @@ public class CayoPericoMap {
 	
 	
 	int requestScope = 0;
+	LootDataProvider lootDataProvider;
 	private void menuReperage() {
 		menuManager.clear()
-		.backTo(this::menuGeneral);
+		.backTo(() -> {
+			lootDataProvider = null;
+			currentLocation = null;
+			menuGeneral();
+		});
 		if ( selectedPlayer == null ) { panel.repaint(); return; }
 		
-		int playerIndex = selectedPlayer.getIndex(); 
+		int playerIndex = selectedPlayer.getIndex();
+		if ( lootDataProvider == null ) {
+			lootDataProvider = new LootDataProvider(service, playerIndex);
+			lootDataProvider.reload();
+		}
 		
-		List<SecondaryLoot> loots = new ArrayList<>();
-		loots.addAll( service.getIslandLoot(playerIndex) );
-		loots.addAll( service.getCompoundLoot(playerIndex) );
+		List<SecondaryLoot> loots = lootDataProvider.allSecondaryLoots();
 		Map<LootType, Long> counts = loots.stream()
 			.collect( Collectors.groupingBy(SecondaryLoot::getType, Collectors.counting()) );
 		
@@ -185,12 +205,21 @@ public class CayoPericoMap {
 			scopedMask = scopedMask << 1;
 		}
 		menuManager
+		.addSubMenu(txt("menu.main_loot"), this::menuLootPrincipal)
+		.addSpacer()
+		.addLabel( txt("menu.additional_loot") )
 		.checkMaskItems(itemsConf, requestScope, this::maskingIfSelectedScope);
-		if ( isLocalPlayerSelected ) menuManager.addSave( () -> {
-			MapItem.bitStream(5, requestScope)
+		
+		if ( isLocalPlayerSelected ) {
+			menuManager
+			.addSubMenu( txt("menu.customize"), this::menuCustomLoots )
+			.addSave( () -> {
+				lootDataProvider.saveChanges();
+				MapItem.bitStream(5, requestScope)
 				.mapToObj( idx -> LootType.values()[idx] )
-				.forEach( type -> service.scopeLoot(playerIndex, type) );
-		});
+				.forEach( type -> service.scopeLoot(type) );
+			});
+		}
 		panel.repaint();
 	}
 	private Consumer<Boolean> maskingIfSelectedScope(int mask) {
@@ -201,6 +230,132 @@ public class CayoPericoMap {
 				requestScope &= ~mask;
 			}
 		};
+	}
+	
+	@Setter
+	int selectedLoot;
+	private void menuLootPrincipal() {
+		menuManager.clear()
+		.backTo( this::menuReperage );
+		
+		MainLoot loot = service.getMainLoot(selectedPlayer.getIndex());
+		List <String> itemsConf = Stream.of( MainLoot.values() )
+			.map( l -> txt("loots."+l.name().toLowerCase() ) )
+			.collect( Collectors.toList() );
+		menuManager
+		.checkIndexItems(itemsConf, loot.ordinal(), this::setSelectedLoot );
+		
+		if ( isLocalPlayerSelected ) menuManager.addSave( () -> {
+			service.setMainLoot( MainLoot.values()[selectedLoot] );
+			playerSelected( selectedPlayer ); // refresh screen and data
+		});
+	}
+	
+	String currentLocation;
+	private void menuCustomLoots() {
+		Map<String, Integer> locations = new LinkedHashMap<>();
+		locations.put("airstrip",   0x0000003F);
+		locations.put("north_dock", 0x00001FC0);
+		locations.put("fields",     0x0001E000);
+		locations.put("main_dock",  0x00FE0000);
+		locations.put("compound",   0x000000FF);
+
+		if ( currentLocation == null ) currentLocation = "airstrip";
+		boolean island = !"compound".equals(currentLocation);
+		List<? extends SecondaryLoot> allLoots = island ? lootDataProvider.getSecondaryIslandLoot() : lootDataProvider.getSecondaryCompundLoot();
+		
+		int currentMask = locations.get(currentLocation);
+		// System.out.format("current location[%s] mask[%08x]\n", currentLocation, currentMask);
+		
+		menuManager.clear()
+		.backTo( this::menuReperage )
+		.addSpacer()
+		.addLabel( txt("location."+currentLocation) )
+		.addNavBar(
+			() -> {
+				List<String> locationKeys = new ArrayList<>();
+				locations.forEach((txt, m) -> locationKeys.add(txt));
+				int i = locationKeys.indexOf(currentLocation) - 1;
+				if (i < 0) {
+					menuCustomPaints();
+					return;
+				};
+				currentLocation = locationKeys.get(i);
+				menuCustomLoots();
+			}, 
+			() -> {
+				List<String> locationKeys = new ArrayList<>();
+				locations.forEach((txt, m) -> locationKeys.add(txt));
+				int i = locationKeys.indexOf(currentLocation) + 1;
+				if (i >= locationKeys.size()) { 
+					menuCustomPaints(); 
+					return; 
+				}
+				currentLocation = locationKeys.get(i);
+				menuCustomLoots();
+			}
+		)
+		.addChooserHeader();
+		LootType[] types = {LootType.CASH, LootType.WEED, LootType.COCAINE, LootType.GOLD};
+		int k = 0;
+		
+		for (int mask = 1, cpt = 0; mask != 0x80000000; mask = mask << 1, k++) {
+			if ( (currentMask & mask) == 0 ) {
+				continue;
+			}
+			cpt++;
+			AtomicInteger aIdx = new AtomicInteger(k);
+			menuManager.addLootChooser(cpt, mask, allLoots, types, (type, b) -> {
+				System.out.format("(CB) Change %d on %s(%s) to %s:%s\n", aIdx.get(), currentLocation, island, type.name(), b);
+				lootDataProvider.unsetLootAtPosition(aIdx.get(), island);
+				if (b) lootDataProvider.addLoot(type, aIdx.get(), island);
+				refreshViewCustomLoots();
+			});
+		}
+		refreshViewCustomLoots();
+		// panel.repaint(); // done in refreshViewCustomLoots
+	}
+	
+	
+	private void refreshViewCustomLoots() {
+		List<MapItem> items = new LinkedList<>( /* service.getEquipment(playerIndex) */ );
+		if ( mapView == MapView.ISLAND ) {
+			items.addAll( lootDataProvider.getSecondaryIslandLoot() );
+		}
+		if ( mapView == MapView.COMPOUND ) {
+			items.addAll( lootDataProvider.getSecondaryCompundLoot() );
+		}
+		setMapItems(items);
+	}
+	
+	private void menuCustomPaints() {
+		menuManager.clear()
+		.backTo(this::menuReperage)
+		.addSpacer()
+		.addLabel( txt("loots.paints") )
+		.addNavBar(
+			() -> {
+				currentLocation = "compound";
+				menuCustomLoots();
+			}, 
+			() -> {
+				currentLocation = null;
+				menuCustomLoots();
+			}
+		);
+		
+		Function<Integer, Boolean> hasPaintAt = (idx) -> lootDataProvider.getSecondaryCompundLoot()
+				.stream()
+				.filter( loot -> loot.getIdx() == idx )
+				.filter( loot -> loot.getType() == LootType.PAINTINGS )
+				.findAny()
+				.isPresent();
+		for (int j = 0; j < 7; j++) {			
+			String place = txt("location.paint_"+j);
+			menuManager.addPaintLocation((j+1), place, hasPaintAt.apply(j), (idx, b) -> {});
+		}
+		panel.repaint();
+
 	}
 	
 	int equipmentMask;
@@ -217,6 +372,7 @@ public class CayoPericoMap {
 		itemsConf.put(txt("equipment.bolt_cutters"), 0xF00);
 		itemsConf.put(txt("equipment.guard_truck"), 0x8000);
 		menuManager
+		.addSpacer()
 		.checkMaskItems(itemsConf, MPx_H4CNF_BS_GEN, this::maskingIfSelected );
 		if ( isLocalPlayerSelected ) menuManager.addSave( () -> {
 			service.addScopedEquipment(equipmentMask | 0x17000); // add tower control and power-station
@@ -253,6 +409,7 @@ public class CayoPericoMap {
 		itemsConf.put(txt("vehicles.patrol_boat"), 0x20);
 		itemsConf.put(txt("vehicles.smuggler_boat"), 0x40);
 		menuManager
+		.addSpacer()
 		.checkMaskItems(itemsConf, MP0_H4_MISSIONS, this::maskApproachIfSelected );
 		if ( isLocalPlayerSelected ) menuManager.addSave( () -> {
 			service.addApproach(approachMask, maskSet);
@@ -287,6 +444,7 @@ public class CayoPericoMap {
 		itemsConf.put(lootAccessMaterial, 0x400);
 		itemsConf.put(txt("tools.fingerprint"), 0x800);
 		menuManager
+		.addSpacer()
 		.checkMaskItems(itemsConf, MP0_H4_MISSIONS, this::maskApproachIfSelected );
 		if ( isLocalPlayerSelected ) menuManager.addSave( () -> {
 			service.addApproach(approachMask, maskSet);
@@ -307,6 +465,7 @@ public class CayoPericoMap {
 		itemsConf.put(txt("disturb.armor"), 0x4000);
 		itemsConf.put(txt("disturb.support"), 0x8000);
 		menuManager
+		.addSpacer()
 		.checkMaskItems(itemsConf, MP0_H4_MISSIONS, this::maskApproachIfSelected );
 		if ( isLocalPlayerSelected ) menuManager.addSave( () -> {
 			service.addApproach(approachMask, 0xE000);
@@ -401,7 +560,6 @@ public class CayoPericoMap {
 		panel.repaint();
 	}
 	
-	
 	private void playerSelected(PlayerInfo player) {
 		int playerIndex = player.getIndex();
 		selectedPlayer = player;
@@ -410,14 +568,8 @@ public class CayoPericoMap {
 		isLocalPlayerSelected = (i == playerIndex);
 		List<MapItem> items = new LinkedList<>( service.getEquipment(playerIndex) );
 		
-		switch( mapView ) {
-		case ISLAND:
-			items.addAll( service.getIslandLoot(playerIndex) );
-			break;
-		case COMPOUND:
-			items.addAll( service.getCompoundLoot(playerIndex) );
-			break;
-		}
+		if( mapView == MapView.ISLAND ) items.addAll( service.getIslandLoot(playerIndex) );
+		if( mapView == MapView.COMPOUND ) items.addAll( service.getCompoundLoot(playerIndex) );
 		
 		setMapItems(items);
 		MainLoot mainLoot = service.getMainLoot(playerIndex);
@@ -456,24 +608,36 @@ public class CayoPericoMap {
 	}
 
 	public static void main(String[] args) {
-		/* */
-		GtaProcess gta;
-		try {
-			gta = new GtaProcess();
-		} catch (Exception e) {
-			String message = "Error getting GTA process. Does it run ?";
-			JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		CayoPericoMapService service =  new CayoPericoGtaService(gta); 
-		/* */
-		// CayoPericoMapService service =  new CayoPericoMockService();
-
+		
+		log.info("Running Cayo Perico Assistant");
+		
+		boolean simulated = false;
+		CayoPericoMapService service;
+		
 		String lang = Optional.ofNullable(System.getProperty("user.language"))
 				.orElse("en")
 				.toLowerCase();
 		// lang = "en";
 		jmodmenu.I18n.load(lang);
+		log.info("Load language file {}", lang);
+		
+		/* */
+		if (!simulated) {
+			GtaProcess gta;
+			try {
+				gta = new GtaProcess();
+			} catch (Exception e) {
+				String message = I18n.txt("error.no_process");
+				log.error("GTA process not found.", e);
+				JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			log.info("Gta process found. Ptr: {}", gta);
+			service =  new CayoPericoGtaService(gta);
+		} else {
+			log.warn("Running in SIMULATED MODE");
+			service =  new CayoPericoMockService();
+		}
 		
     	List<PlayerInfo> players = service.getPlayersInfo();
     	SwingUtilities.invokeLater( () -> {
@@ -483,8 +647,9 @@ public class CayoPericoMap {
 			frame.getContentPane().add(cayoPericoMap.panel);
 			frame.pack();
 			frame.setLocation(100, 100);
-			frame.setVisible(true);
+			frame.setResizable(false);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setVisible(true);
     	});
 	}
 

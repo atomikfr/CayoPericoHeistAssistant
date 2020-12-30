@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import jmodmenu.cayo_perico.model.BoltCutters;
 import jmodmenu.cayo_perico.model.GrapplingEquipment;
@@ -17,6 +18,7 @@ import jmodmenu.cayo_perico.model.MapItem;
 import jmodmenu.cayo_perico.model.Paintings;
 import jmodmenu.cayo_perico.model.SecondaryCompundLoot;
 import jmodmenu.cayo_perico.model.SecondaryIslandLoot;
+import jmodmenu.cayo_perico.model.SecondaryLoot;
 import jmodmenu.core.PlayerInfo;
 
 public class CayoPericoMockService implements CayoPericoMapService {
@@ -42,6 +44,7 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	@Override
 	public List<MapItem> getEquipment(int playerIndex) {
 		return Arrays.asList(
+				/*
 			new GrapplingEquipment(2),
 			new GrapplingEquipment(5),
 			new GrapplingEquipment(10),
@@ -58,12 +61,14 @@ public class CayoPericoMockService implements CayoPericoMapService {
 			new BoltCutters(15),
 			
 			new GuardTruck(3)
+			*/
 		);
 	}
 	
 	@Override
 	public List<SecondaryIslandLoot> getIslandLoot(int playerIndex) {
 		return Arrays.asList(
+				/*
 			new SecondaryIslandLoot(LootType.CASH, 1),
 			new SecondaryIslandLoot(LootType.WEED, 3),
 			new SecondaryIslandLoot(LootType.COCAINE, 4),
@@ -80,6 +85,39 @@ public class CayoPericoMockService implements CayoPericoMapService {
 			new SecondaryIslandLoot(LootType.CASH, 21),
 			new SecondaryIslandLoot(LootType.COCAINE, 23),
 			new SecondaryIslandLoot(LootType.CASH, 24)			
+			*/
+				/* Airstrip */
+			new SecondaryIslandLoot(LootType.CASH, 0),
+			new SecondaryIslandLoot(LootType.CASH, 1),
+			new SecondaryIslandLoot(LootType.CASH, 2),
+			new SecondaryIslandLoot(LootType.CASH, 3),
+			new SecondaryIslandLoot(LootType.CASH, 4),
+			new SecondaryIslandLoot(LootType.CASH, 5),
+				/* */
+				/* North Dock */
+			new SecondaryIslandLoot(LootType.COCAINE, 6),
+//			new SecondaryIslandLoot(LootType.CASH, 7),
+//			new SecondaryIslandLoot(LootType.CASH, 8),
+			new SecondaryIslandLoot(LootType.WEED, 9),
+//			new SecondaryIslandLoot(LootType.CASH, 10),
+//			new SecondaryIslandLoot(LootType.CASH, 11),
+			new SecondaryIslandLoot(LootType.COCAINE, 12),
+				/* */
+				/* Fields */
+//			new SecondaryIslandLoot(LootType.CASH, 13),
+			new SecondaryIslandLoot(LootType.WEED, 14),
+			new SecondaryIslandLoot(LootType.CASH, 15),
+			new SecondaryIslandLoot(LootType.CASH, 16),
+				/* */
+				/* Main Dock */
+			new SecondaryIslandLoot(LootType.WEED, 17),
+//			new SecondaryIslandLoot(LootType.WEED, 18),
+			new SecondaryIslandLoot(LootType.CASH, 19),
+			new SecondaryIslandLoot(LootType.WEED, 20),
+//			new SecondaryIslandLoot(LootType.WEED, 21),
+			new SecondaryIslandLoot(LootType.WEED, 22),
+			new SecondaryIslandLoot(LootType.COCAINE, 23)
+				/* */
 		);
 	}
 	
@@ -107,16 +145,47 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	@Override
 	public boolean hasScopedLoot(int playerIndex, LootType type) {
 		if ( type == LootType.CASH ) return true;
-		if ( type == LootType.PAINTINGS ) return true;
+		if ( type == LootType.PAINTINGS ) return false;
 		if ( type == LootType.COCAINE ) return true;
 		return false;
 	}
 	
+	private int generateScopeMask(LootType type, boolean island) {
+		List<? extends SecondaryLoot> loots = island ? getIslandLoot(0) : getCompoundLoot(0);
+		AtomicInteger mask = new AtomicInteger();
+		loots.stream()
+			.filter( loot -> loot.getType() == type )
+			.forEach( loot -> mask.set(mask.get() | (1 << loot.getIdx())) );
+		return mask.get();
+	}
+	
 	@Override
-	public void scopeLoot(int playerIndex, LootType type) {}
+	public Integer getScopeData(int playerIndex, LootType type, boolean island) {
+		if ( type == LootType.CASH ) return generateScopeMask(type, island);
+		if ( type == LootType.PAINTINGS ) return 0x24;
+		if ( type == LootType.COCAINE ) return generateScopeMask(type, island);
+		return 0;
+	}
+	
+	@Override
+	public void setLootPosition(LootType type, boolean island, int value) {}
+	
+	@Override
+	public void setLootScope(LootType type, boolean island, int value) {}
+	
+	@Override
+	public void scopeLoot(LootType type) {}
 	
 	public MainLoot getMainLoot(int playerIndex) {
 		return MainLoot.BONDS;
+	}
+	
+	@Override
+	public void setMainLoot(MainLoot mainLoot) {}
+	
+	@Override
+	public int getLootStackValue(int playerIndex, LootType type) {
+		return 120000;
 	}
 	
 	@Override

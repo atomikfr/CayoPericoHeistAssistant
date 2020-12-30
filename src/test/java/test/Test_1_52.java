@@ -477,55 +477,65 @@ public class Test_1_52 {
 		
 		int[] statJoaat = null;
 		
+		System.out.println("*** ISLAND **********");
+		
 		/* */
+		System.out.println("  * position on map _____");
 		for (int i = 1; i <= 4; i++) { // out
 			long l =
 			  gta.globals().at(1706028).at(iParam0, 53).at(5).at(10).at(i).get();
 			onMap[i-1] = (int) l;
-			System.out.format("%d -> %d\n", i, l);
+			System.out.format("%02d -> %d\n", i, l);
 			statJoaat = new int[] { -1646922924, -781945763, -1003353535, -1153023047 };
 			int statValue = i == 4 ? 0x00FFFFFF: 0;// onMap[i-5];
-			gta.getStatManager().setStat(statJoaat[i-1], statValue);
+			int statIndex = statJoaat[i-1];
+			System.out.format("   -> Set stat %d to %d\n", statIndex, statValue);
+			gta.getStatManager().setStat(statIndex, statValue);
 		}
 		statJoaat = new int[] {
 				-1690987375, 834429412, 611902845, 1712421353
 		};
+		System.out.println("  * scope out _____");
 		for (int i = 5; i <= 8; i++) { 
 			long l =
 			  gta.globals().at(1706028).at(iParam0, 53).at(5).at(10).at(i).get();
-			System.out.format("%d -> %d\n", i, l);
+			System.out.format("%02d -> %d\n", i, l);
 			
 			int statIndex = statJoaat[i-5];
 			int statValue = i == 8 ? 0x00FFFFFF: 0;// onMap[i-5];
-			System.out.format("Set stat %d to %s\n", statIndex, statValue);
+			System.out.format("   -> Set stat %d to %d\n", statIndex, statValue);
 			gta.getStatManager().setStat(statIndex, statValue);
 		}
 		/* */
 		
 		
+		System.out.println("*** COMPOUND **********");
+		
 		/* 9 - 12  => 13 - 16 */
+		System.out.println("  * position on map _____");
 		/* */
 		for (int i = 9; i <= 12; i++) { // in
 			long l =
 			  gta.globals().at(1706028).at(iParam0, 53).at(5).at(10).at(i).get();
 			onMap[i-9] = (int) l;
-			System.out.format("Was %d -> %d\n", i, l);
+			System.out.format("%02d -> %d\n", i, l);
 			statJoaat = new int[] { -399833087, 1093424111, 972322244, 803319022 };
-			int statValue = i == 12 ? 0x00FFFFFF: 0;// onMap[i-5];
-			System.out.format("Set %d -> %d\n", statJoaat[i-9], statValue);
+			int statValue = i == 12 ? 0x000000FF: 0;// onMap[i-5];
+			System.out.format("   -> Set %d to %d\n", statJoaat[i-9], statValue);
 			gta.getStatManager().setStat(statJoaat[i-9], statValue);
 		}
 		statJoaat = new int[] {
 				-670391016, -404469783, -2365219, -1409842437
 		};
+		System.out.println("  * scope out _____");
 		for (int i = 13; i <= 16; i++) { 
 			long l =
 			  gta.globals().at(1706028).at(iParam0, 53).at(5).at(10).at(i).get();
-			System.out.format("%d -> %d\n", i, l);
+			System.out.format("%02d -> %d\n", i, l);
 			
 			int statIndex = statJoaat[i-13];
-			int statValue = i == 16 ? 0x00FFFFFF : 0;// onMap[i-13];
-			System.out.format("Set stat %d to %s\n", statIndex, statValue);
+			int statValue = i == 16 ? 0x000000FF : 0;// onMap[i-13];
+			System.out.format("   -> Set stat %d to %d\n", statIndex, statValue);
 			gta.getStatManager().setStat(statIndex, statValue);
 		}
 		/* */
@@ -541,6 +551,12 @@ public class Test_1_52 {
 		gta.getStatManager().setStat(paintIndex, paintMap);
 		
 		
+	}
+	
+	@Test
+	public void joaatScope() {
+		System.out.println( Utils.joaat("MP0_H4LOOT_CASH_I_SCOPED") );
+		System.out.println( -1690987375 );
 	}
 	
 	

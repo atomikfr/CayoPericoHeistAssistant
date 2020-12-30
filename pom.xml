@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.atomik</groupId>
   <artifactId>cayo-perico-heist-assistant</artifactId>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.9-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
@@ -31,6 +31,28 @@
     <artifactId>snakeyaml</artifactId>
     <version>1.27</version>
 </dependency>
+
+<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.7.30</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.14.0</version>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+    <version>2.14.0</version>
+    <scope>runtime</scope>
+</dependency>
+
 
 
 <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -84,6 +106,24 @@
           </archive>
         </configuration>
       </plugin>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<executions>
+			<execution>
+				<phase>package</phase>
+				<goals>
+					<goal>single</goal>
+				</goals>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>src/main/assembly/zip.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
     </plugins>
   </build>
   

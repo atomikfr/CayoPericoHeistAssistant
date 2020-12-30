@@ -7,9 +7,11 @@ menu:
   disturbation: Perturbations
   cuts: Répartition gains
   heist: Braquage
+  main_loot: Objectif principal
   additional_loot: Objectifs secondaires
   back: retour
   save: enregistrer
+  customize: Emplacements
 equipment:
   bolt_cutters: Pinces
   grappling_equipment: grappins
@@ -25,7 +27,26 @@ loots:
   necklace: Collier de rubis
   bonds: Bons au porteur
   files: Dossiers sur Madrazo
-  diamond: Statue de panthère
+  diamond: Diamant rose
+  statue: Statue de panthère
+loot_small:
+  cash: "$$$"
+  weed: Can.
+  cocaine: Coc.
+  gold: Or
+location:
+  airstrip: Aéroport
+  north_dock: Dock nord
+  main_dock: Dock principal
+  fields: Champs
+  compound: Villa
+  paint_0: Pièce Ouest
+  paint_1: Pièce Nord
+  paint_2: Pièce Est
+  paint_3: Bureau El Rubio
+  paint_4: Bureau El Rubio
+  paint_5: Sous-sol
+  paint_6: Sous-sol
 vehicles:
   submarine: kosatka
   bomber: alkonost
@@ -55,3 +76,5 @@ cuts:
 heist:
   loot_value: Valeur loot
   bagsize: taille sac
+error:
+  no_process: "Impossible de trouver le processus GTA. Est-il lancé ?"
