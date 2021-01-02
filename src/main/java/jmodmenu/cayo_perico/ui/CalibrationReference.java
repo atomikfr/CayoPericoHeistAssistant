@@ -1,16 +1,19 @@
 package jmodmenu.cayo_perico.ui;
 
-import java.awt.Point;
+import lombok.Getter;
+import lombok.ToString;
 
+@ToString
 public class CalibrationReference {
 
 	float mapX, mapY;
 	int x, y;
+	@Getter
 	float xfactor, yfactor, xoffset, yoffset;
 
 	CalibrationReference previous = null;
 	
-	CalibrationReference to(int x, int y) {
+	public CalibrationReference to(int x, int y) {
 		this.x = x;
 		this.y = y;
 		CalibrationReference ref = this;
@@ -31,16 +34,20 @@ public class CalibrationReference {
 		}
 		return ref;
 	}
-	CalibrationReference calibrate(float mapX, float mapY) {
+	public CalibrationReference calibrate(float mapX, float mapY) {
 		this.mapX = mapX;
 		this.mapY = mapY;
 		
 		return this;
 	}
+	/*
 	Point apply(float x, float y) {
 		Point p = new Point();
 		p.x = (int) ((x * xfactor) + xoffset);
 		p.y = (int) ((y * yfactor) + yoffset);
 		return p;
 	}
+	*/
+	
+	
 }

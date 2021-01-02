@@ -16,7 +16,7 @@ public class MenuScopeMainLoot extends MenuAbstract {
 	
 	public MenuScopeMainLoot(MenuContext ctx) {
 		super(ctx);
-		showSaveAction = false;
+		// showSaveAction = false;
 	}
 	
 	@Override

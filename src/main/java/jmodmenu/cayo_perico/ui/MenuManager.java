@@ -6,12 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.swing.JButton;
@@ -20,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 
 import jmodmenu.I18n;
 import jmodmenu.cayo_perico.model.LootType;
@@ -72,9 +67,14 @@ class MenuManager {
 	}
 
 	MenuManager checkMaskItems(Map<String, Integer> itemsConf, int value, Function<Integer, Consumer<Boolean>> actionBuilder) {
+		return checkMaskItems(itemsConf, value, actionBuilder, null);
+	}
+	
+	MenuManager checkMaskItems(Map<String, Integer> itemsConf, int value, Function<Integer, Consumer<Boolean>> actionBuilder, Consumer<JCheckBox> checkBoxCb) {
 		itemsConf.forEach( (name, mask) -> {
 			boolean selected = (value & mask) == mask; 
-			manager.addCheck(name.toUpperCase(), selected, actionBuilder.apply(mask));
+			JCheckBox box = manager.addCheck(name.toUpperCase(), selected, actionBuilder.apply(mask));
+			if (checkBoxCb != null) checkBoxCb.accept(box);
 		});
 		panel.repaint();
 		return this;

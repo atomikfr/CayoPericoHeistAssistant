@@ -2,6 +2,7 @@ package jmodmenu.cayo_perico.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -72,8 +74,8 @@ public class ComponentManager {
 		checkBox.setLocation(x, y);
 		checkBox.setSize(200, 30);
 		y += 30;
-		checkBox.addActionListener( event -> action.accept(checkBox.isSelected()) );
 		add(checkBox);
+		checkBox.addActionListener( event -> action.accept(checkBox.isSelected()) );
 		return checkBox;
 	}
 	

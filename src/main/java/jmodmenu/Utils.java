@@ -1,13 +1,5 @@
 package jmodmenu;
 
-import java.security.InvalidParameterException;
-import java.util.LinkedList;
-import java.util.List;
-
-import jmodmenu.cayo_perico.model.LootType;
-import jmodmenu.cayo_perico.model.MapItem;
-import jmodmenu.cayo_perico.model.SecondaryCompundLoot;
-
 public class Utils {
 	
 	public static int joaat(String str) {

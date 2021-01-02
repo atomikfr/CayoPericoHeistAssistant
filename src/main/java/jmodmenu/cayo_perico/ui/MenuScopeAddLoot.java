@@ -26,7 +26,17 @@ public class MenuScopeAddLoot extends MenuAbstract {
 		locations.put("compound",   0x000000FF);
 	}
 	
+	Map<String, MapView> locationView = Map.of(
+		"airstrip", MapView.AIRSTRIP,
+		"north_dock", MapView.NORTH_DOCK,
+		"fields", MapView.FIELDS,
+		"main_dock", MapView.MAIN_DOCK,
+		"compound", MapView.COMPOUND,
+		"paintings", MapView.COMPOUND
+	);
+	
 	MenuScopeAddLootCtx menuScopeAddLootCtx;
+	MapView previousView;
 
 	public MenuScopeAddLoot(MenuContext ctx, MenuScopeAddLootCtx menuScopeAddLootCtx ) {
 		super(ctx);
@@ -47,6 +57,7 @@ public class MenuScopeAddLoot extends MenuAbstract {
 			currentLocation = "airstrip";
 			menuScopeAddLootCtx.setCurrentLocation(currentLocation);
 		}
+		if ( previousView == null ) previousView = context.currentView();
 	}
 
 	@Override
@@ -73,6 +84,15 @@ public class MenuScopeAddLoot extends MenuAbstract {
 			);
 		}
 		refreshViewCustomLoots();
+	}
+	
+	@Override
+	protected void back() {
+		if ( previousView != null ) {
+			context.setView(previousView);
+			previousView = null;
+		}
+		super.back();
 	}
 	
 	private BiConsumer<LootType, Boolean> changeLootCallbackFor(int idx, boolean island) {
@@ -114,7 +134,8 @@ public class MenuScopeAddLoot extends MenuAbstract {
 				show();
 			}, 
 			() -> {
-				currentLocation = null;
+				currentLocation = "airstrip";
+				menuScopeAddLootCtx.setCurrentLocation(currentLocation);
 				show();
 			}
 		);
@@ -129,18 +150,15 @@ public class MenuScopeAddLoot extends MenuAbstract {
 			String place = txt("location.paint_"+j);
 			menuManager.addPaintLocation((j+1), place, hasPaintAt.apply(j), (idx, b) -> {});
 		}
+		context.setView(MapView.COMPOUND);
 	}
 	
 	private void refreshViewCustomLoots() {
-		MapView view = context.currentView();
 		List<MapItem> items = new LinkedList<>( /* service.getEquipment(playerIndex) */ );
-		if ( view == MapView.ISLAND ) {
-			items.addAll( lootDataProvider.getSecondaryIslandLoot() );
-		}
-		if ( view == MapView.COMPOUND ) {
-			items.addAll( lootDataProvider.getSecondaryCompundLoot() );
-		}
+		items.addAll( lootDataProvider.getSecondaryIslandLoot() );
+		items.addAll( lootDataProvider.getSecondaryCompundLoot() );
 		context.setMapItems(items);
+		context.setView(locationView.get(currentLocation));
 	}
 	
 }

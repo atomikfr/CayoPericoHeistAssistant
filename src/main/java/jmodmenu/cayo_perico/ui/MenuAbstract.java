@@ -70,6 +70,7 @@ interface MenuContext {
 	PlayerInfo selectedPlayer();
 	void refreshData();
 	MapView currentView();
+	void setView(MapView mapView);
 	void setMapItems(List<MapItem> items);
 }
 

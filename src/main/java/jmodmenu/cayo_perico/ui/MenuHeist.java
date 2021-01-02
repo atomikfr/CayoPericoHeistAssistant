@@ -44,7 +44,7 @@ public class MenuHeist extends MenuAbstract {
 	protected void save() {
 		for(Field field : fields) {
 			if ( !field.hasChanged() ) continue;
-			if ( field.id == 0 ) service.setLootValue(loot, field.intValue());
+			if ( field.id == 0 ) service.setMainLootValue(loot, field.intValue());
 			else if ( field.id == 6) service.setBagSize(field.intValue());
 			else service.setStackLootValue(LootType.values()[field.id-1], field.intValue());
 		}

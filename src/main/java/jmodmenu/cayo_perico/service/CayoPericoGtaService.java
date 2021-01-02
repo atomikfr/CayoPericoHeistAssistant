@@ -340,6 +340,17 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	}
 	
 	@Override
+	public void setMainLootValue(MainLoot loot, int newLootValue) {
+		glMainLoot(loot).set((long)newLootValue);
+	}
+	
+	@Override
+	public int getMainLootValue(MainLoot loot) {
+		return (int) glMainLoot(loot).get();
+	}
+
+
+	@Override
 	public int getScopedEquipment(int playerIndex) {
 		// System.out.println("Get Scoped " + playerIndex);
 		int val = (int) glPerico(playerIndex).at(5).get();
@@ -428,11 +439,6 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	@Override
 	public void setBagSize(int newBagSize) {
 		glBagSize().set((long)newBagSize);
-	}
-	
-	@Override
-	public void setLootValue(MainLoot loot, int newLootValue) {
-		glMainLoot(loot).set((long)newLootValue);
 	}
 	
 	@Override

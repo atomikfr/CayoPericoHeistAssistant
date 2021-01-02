@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import jmodmenu.cayo_perico.model.BoltCutters;
 import jmodmenu.cayo_perico.model.GrapplingEquipment;
 import jmodmenu.cayo_perico.model.GuardUniform;
+import lombok.Getter;
 
 @SuppressWarnings("serial")
 public class MapPanel extends JPanel {
@@ -29,17 +30,35 @@ public class MapPanel extends JPanel {
 	Consumer<Graphics> onDraw;
 	CalibrationReference ref;
 	
+	@Getter
+	private double zoomFactor = 1.0;
+	int maxX, maxY;
+	
+	@Getter
+	private Dimension bgDimension;
+	
 	public MapPanel(String filename) {
 		changeBackgroundImage(filename);
-	    setPreferredSize( new Dimension(map.getWidth(), map.getHeight()) );
+		setZoomFactor(1.0);
 	}
 	
 	public void changeBackgroundImage(String filename) {
 		try {                
            map = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(filename));
+           bgDimension = new Dimension(map.getWidth(), map.getHeight());
+
         } catch (IOException ex) {
              throw new RuntimeException("Impossible de charger la map " + filename, ex);
         }
+	}
+	
+	public void setZoomFactor(double zoomFactor) {
+		this.zoomFactor = zoomFactor;
+		bgDimension = new Dimension(map.getWidth(), map.getHeight());
+        maxX = (int) (map.getWidth() * zoomFactor);
+        maxY = (int) (map.getHeight() * zoomFactor);
+		setPreferredSize( new Dimension(maxX, maxY) );
+		repaint();
 	}
 	
 	public void onDraw(Consumer<Graphics> onDraw) {
@@ -58,14 +77,18 @@ public class MapPanel extends JPanel {
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(map, 0, 0, this);
+        // g.drawImage(map, 0, 0, this);
+        g.drawImage(map, 0, 0, maxX, maxY, 0, 0, map.getWidth(), map.getHeight(), this);
         int size = 11;
         int offset = size / 2 + 1;
         icons.stream()
     	.forEach( icon -> {
     		g.setColor(icon.color);
-    		Point p = ref.apply(icon.pos[0], icon.pos[1]);
-    		g.fillOval(p.x-offset+icon.xoffset, p.y-offset+icon.yoffset, size, size);
+    		// Point p = ref.apply(icon.pos[0], icon.pos[1]);
+    		Point p = icon.apply(ref);
+    		int dx = (int) (p.x * zoomFactor - offset);
+    		int dy = (int) (p.y * zoomFactor - offset);
+    		g.fillOval(dx, dy, size, size);
     	} );
         if ( onDraw != null ) onDraw.accept(g);
     }

@@ -86,7 +86,7 @@ public class StatManager {
 		BiConsumer<Integer, Integer> statWriting = (statIndex, statValue) -> {
 			globalStatIndex.setInt( statIndex );
 			int loop = setAndWait(statValue);
-			log.debug( String.format("Set stat[%d] to value[%d] at loop[%d]\n", statIndex, statValue, loop) );
+			log.debug( String.format("Set stat[%d] to value[%d] at loop[%d]", statIndex, statValue, loop) );
 		};
 		
 		statProcessor.accept( statWriting );

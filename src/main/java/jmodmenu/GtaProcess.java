@@ -33,6 +33,7 @@ public class GtaProcess {
 	private Ptr threadList; 
 	
 	public GtaProcess() {
+		Ptr.logOperationSystemInfo();
 		initPointers();
 	}
 	

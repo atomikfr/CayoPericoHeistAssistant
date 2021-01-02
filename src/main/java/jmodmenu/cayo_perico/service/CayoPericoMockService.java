@@ -1,17 +1,11 @@
 package jmodmenu.cayo_perico.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jmodmenu.cayo_perico.model.BoltCutters;
-import jmodmenu.cayo_perico.model.GrapplingEquipment;
-import jmodmenu.cayo_perico.model.GuardTruck;
-import jmodmenu.cayo_perico.model.GuardUniform;
 import jmodmenu.cayo_perico.model.LootType;
 import jmodmenu.cayo_perico.model.MainLoot;
 import jmodmenu.cayo_perico.model.MapItem;
@@ -217,6 +211,7 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	public void setWeapon(int weaponIndex) {
 	}
 	
+	@SuppressWarnings("serial")
 	@Override
 	public Map<String, Integer> getCuts() {
 		return new LinkedHashMap<>() {{
@@ -245,7 +240,12 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	}
 	
 	@Override
-	public void setLootValue(MainLoot loot, int newLootValue) {
+	public void setMainLootValue(MainLoot loot, int newLootValue) {
+	}
+	
+	@Override
+	public int getMainLootValue(MainLoot loot) {
+		return loot.value();
 	}
 	
 	@Override

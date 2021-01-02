@@ -7,8 +7,6 @@ import jmodmenu.memory.Ptr;
 import jmodmenu.memory.RefPtr;
 
 public class NetPlayerManager extends RefPtr {
-	
-	private long[] playerPtrs;
 			
 	NetPlayerManager(Ptr ptr) {
 		super(ptr);

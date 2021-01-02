@@ -14,6 +14,7 @@ import com.sun.jna.platform.win32.Kernel32Util;
 import com.sun.jna.platform.win32.Tlhelp32;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
+import com.sun.jna.platform.win32.WinNT.OSVERSIONINFO;
 import com.sun.jna.ptr.IntByReference;
 
 import lombok.extern.slf4j.Slf4j;
@@ -208,6 +209,17 @@ public class Ptr {
 		ptr.processName = processName;
 		ptr.moduleName = processName;
 		return ptr;
+	}
+	
+	public static void logOperationSystemInfo() {
+        OSVERSIONINFO lpVersionInfo = new OSVERSIONINFO();
+        Kernel32.INSTANCE.GetVersionEx(lpVersionInfo);
+        log.info("Operating system: {}.{} ({}) [{}]", 
+            lpVersionInfo.dwMajorVersion.longValue(),
+            lpVersionInfo.dwMinorVersion.longValue(),
+            lpVersionInfo.dwBuildNumber,
+            Native.toString(lpVersionInfo.szCSDVersion)
+        );
 	}
 
 	public static Pointer getModuleBaseAddress(int pid, String moduleName) {

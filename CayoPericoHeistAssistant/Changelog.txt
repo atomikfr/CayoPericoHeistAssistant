@@ -1,9 +1,17 @@
 # Version 0.10
 
+WORK STILL IN PROGRESS
+
 * Allow to change difficulty level
+* Change zoom view of Compound, Fix loot location on this view
+* Add zoom view for airstrip, north dock, main dock, fields
+* Navigation through add loot locations show the corresponding zoom view
+* Try to adapt application Height according to screen Height (min 800px)
+* Loot position are now spaced if too close from others
 * Allow to change stack value of additional loot type
 * Compute additional loot value
 * Fix Main loot value if hard mode enable
+* Fix Diamond loot value, in general loot value are now read from game
 * Fix potential issue in stat manager, allow stat modification for both character
 * (code) Split Menus in different classes
 * (code) rename some french method names
@@ -25,7 +33,7 @@
 
 # Version 0.8 
 
-Initial "public" release
+27 Dec 2020 - Initial "public" release
 
 * Allow to select a connected player from session
 * Show position of each loot and each equipment on the map

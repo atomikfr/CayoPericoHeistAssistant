@@ -3,19 +3,25 @@ package jmodmenu.cayo_perico.ui;
 import static jmodmenu.I18n.txt;
 
 import java.awt.Color;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.swing.JButton;
@@ -84,7 +90,6 @@ public class CayoPericoMap implements MenuContext {
 		panel = new MapPanel( MapView.ISLAND.imageFile );		
 		setView( MapView.ISLAND );
 
-		playerSelector = createPlayerSelector(null);
 		panel.setLayout(null);
 		menuManager = new MenuManager(panel);
 
@@ -100,19 +105,32 @@ public class CayoPericoMap implements MenuContext {
 		menuGeneral();
 		lootManager = new LootManager(panel);
 		
+		int controlX = 420;
+		playerSelector = createPlayerSelector(null);
+		
 		JButton reload = new JButton( "reload" ); // "♻");
-		reload.setLocation(620, 10);
+		reload.setLocation(controlX, 10);
 		reload.setSize(80, 25);
 		reload.addActionListener( event -> reload() );
 		panel.add(reload);
+		controlX += 90;
 		
 		JButton reloadComputer = new JButton("reset");
-		reloadComputer.setLocation(710, 10);
+		reloadComputer.setLocation(controlX, 10);
 		reloadComputer.setSize(80, 25);
 		reloadComputer.addActionListener( event -> service.restartSubmarineComputer() );
 		panel.add(reloadComputer);
+		controlX += 80;
 		
 		panel.addMouseListener( new MyMouseAdapter() );
+	}
+	
+	private void setMaxHeight(int height) {
+		if ( panel.getBgDimension().getHeight() > height ) {
+			double zoomFactor = (height-50.0) / panel.getBgDimension().getHeight();
+			panel.setZoomFactor(zoomFactor);
+			lootManager.setZoomFactor(zoomFactor);
+		}
 	}
 	
 	<T extends MenuAbstract> T subMenu(Class<T> klass) {
@@ -152,25 +170,36 @@ public class CayoPericoMap implements MenuContext {
 		panel.repaint();
 	}
 	
+	Rectangle getScaledRectange(Rectangle rect) {
+		return new Rectangle((int)(rect.x * panel.getZoomFactor()), (int)(rect.y * panel.getZoomFactor()), 
+				(int)(rect.width * panel.getZoomFactor()), (int)(rect.height * panel.getZoomFactor()));
+	}
+	
+	Rectangle getScaledRectange(int x, int y, int w, int h) {
+		return new Rectangle((int)(x * panel.getZoomFactor()), (int)(y * panel.getZoomFactor()), 
+				(int)(w * panel.getZoomFactor()), (int)(h * panel.getZoomFactor()));
+	}
+	
 	class MyMouseAdapter extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			Point p = e.getPoint();
-			Rectangle rect = null;
 			if ( mapView == MapView.ISLAND ) {
-				rect = new Rectangle(587, 668, 60, 55);
-				if ( rect.contains(p) ) {
-					setView(MapView.COMPOUND);
+				// try to zoom in on each view
+				for ( MapView other : MapView.values() ) {
+					if (other == MapView.ISLAND) continue;
+					if ( getScaledRectange(other.zoomIn).contains(p) ) {
+						setView(other);
+					}
 				}
+
 				return;
 			}
-			if (mapView == MapView.COMPOUND ) {
-				rect = new Rectangle(33, 27, 200, 207);
-				if ( rect.contains(p) ) {
-					setView(MapView.ISLAND);
-				}
-				return;
+			// on all other view try to zoom out
+			if ( getScaledRectange(mapView.zoomOut).contains(p) ) {
+				setView(MapView.ISLAND);
 			}
+
 		}
 	}
 	
@@ -192,7 +221,7 @@ public class CayoPericoMap implements MenuContext {
 	private JComboBox<PlayerInfo> createPlayerSelector( List<PlayerInfo> players ) {
 		if (players == null) players = Collections.emptyList();
 		JComboBox<PlayerInfo> res = new JComboBox<>( players.toArray(new PlayerInfo[] {}) );
-		res.setLocation( 450, 10 );
+		res.setLocation( 250, 10 );
 		res.setSize(150, 25);
 		res.addActionListener( event -> playerSelected((PlayerInfo) playerSelector.getSelectedItem()) );
 		return res;
@@ -234,15 +263,15 @@ public class CayoPericoMap implements MenuContext {
 		isLocalPlayerSelected = (i == playerIndex);
 		List<MapItem> items = new LinkedList<>( service.getEquipment(playerIndex) );
 		
-		if( mapView == MapView.ISLAND ) items.addAll( service.getIslandLoot(playerIndex) );
 		if( mapView == MapView.COMPOUND ) items.addAll( service.getCompoundLoot(playerIndex) );
+		else items.addAll( service.getIslandLoot(playerIndex) );
 		
 		setMapItems(items);
 		MainLoot mainLoot = service.getMainLoot(playerIndex);
 		
-		long additionalLootValue = items.stream()
-			.filter( item -> item instanceof SecondaryLoot )
-			.map( SecondaryLoot.class::cast )
+		List<SecondaryLoot> lootForValue = new LinkedList<>( service.getIslandLoot(playerIndex) );
+		lootForValue.addAll( service.getCompoundLoot(playerIndex) );
+		long additionalLootValue = lootForValue.stream()
 			.collect( Collectors.groupingBy(SecondaryLoot::getType, Collectors.counting()) )
 			.entrySet()
 			.stream()
@@ -251,7 +280,7 @@ public class CayoPericoMap implements MenuContext {
 		
 		boolean isHard = service.isHardMode(playerIndex);
 		
-		int mainLootValue = (int)(mainLoot.value() * (isHard ? 1.0 : 1.1));
+		int mainLootValue = (int)(mainLoot.value() * (isHard ? 1.1 : 1.0));
 
 		lootManager.set(
 			txt("loots."+mainLoot.text()),
@@ -280,11 +309,57 @@ public class CayoPericoMap implements MenuContext {
 	
 	public void setMapItems(List<MapItem> items) {
 		List<MapIcon> icons = new LinkedList<>();
+		
+		BiFunction<MapIcon, MapIcon, Double> dist = (a, b) -> 
+			(a == null || b == null) ? 9999.9 : a.apply(panel.ref).distance(b.apply(panel.ref));
+		
+		
 		for(MapItem item : items) {
 			MapIcon icon = new MapIcon();
 			icon.pos = item.position();
 			icon.color = Optional.ofNullable( itemColors.get(item.name()) )
 				.orElse(Color.CYAN);
+			
+			if ( log.isTraceEnabled() ) log.trace( String.format("Adding icon at pos %.2f %.2f", icon.pos[0], icon.pos[1]) );
+			
+			List<MapIcon> nearIcons = icons.stream()
+				.filter( other -> {
+					return ( dist.apply(other, icon) < 50.0 );
+				})
+				.collect(Collectors.toList());
+			
+			Supplier<MapIcon> findNearest = () -> nearIcons.stream()
+				.min( Comparator.comparing(other ->  other.apply(panel.ref).distance(icon.apply(panel.ref))) )
+				.orElse(null);
+
+			MapIcon nearest = findNearest.get();
+			double currentDist = dist.apply(icon, nearest);
+			if ( log.isTraceEnabled() ) log.trace("Nearest object count[{}] min distance[{}]", nearIcons.size(), dist.apply(icon, nearest));
+			
+			boolean goDown = true;
+			int xoffset = 0;
+			int yoffset = 0;
+			int loop = 0;
+			while ( currentDist < 8.0 ) {
+				if ( goDown ) {
+					if ( nearest.pos[0] < icon.pos[0] )
+						yoffset = 8;
+					else yoffset = -8;
+				} else {
+					yoffset = 0;
+					xoffset += 8;
+				}
+				goDown = !goDown;
+				icon.offset(xoffset, yoffset);
+				
+				nearest = findNearest.get();
+				currentDist = dist.apply(icon, nearest);
+				if ( log.isTraceEnabled() ) log.trace( String.format("  Loop[%d] min is [%.2f]", loop, currentDist) );
+				if ( loop++ > 10 ) {
+					log.warn( "  stop solving near collision at loop {}", loop );
+					break;
+				}
+			}
 			icons.add(icon);
 		}
 		panel.icons = icons;
@@ -336,16 +411,23 @@ public class CayoPericoMap implements MenuContext {
 		
     	List<PlayerInfo> players = service.getPlayersInfo();
     	SwingUtilities.invokeLater( () -> {
+    		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    		DisplayMode mode = gd.getDisplayMode();
     		CayoPericoMap cayoPericoMap = new CayoPericoMap( service );
+    		log.info("Create CayoPericoMap. Screen resolution [{}x{}]", mode.getWidth(), mode.getHeight());
+    		cayoPericoMap.setMaxHeight( mode.getHeight() );
+    		// cayoPericoMap.setMaxHeight( 800 );
     		cayoPericoMap.setPlayers(players);
 			JFrame frame = new JFrame("Cayo Perico Heist Assistant");
 			frame.getContentPane().add(cayoPericoMap.panel);
 			frame.pack();
-			frame.setLocation(100, 100);
+			frame.setLocation(50, 50);
 			frame.setResizable(false);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
     	});
 	}
+
+
 
 }

@@ -18,7 +18,6 @@ public interface CayoPericoMapService {
 	int getLocalPlayerIndex();
 	void addApproach(int approachMask, int setMask);
 	void setBagSize(int newBagSize);
-	void setLootValue(MainLoot loot, int newLootValue);
 	int getMyBagSize();
 	int getCurrentLootValue(int index, MainLoot loot);
 	void setCuts(Integer[] values);
@@ -31,6 +30,8 @@ public interface CayoPericoMapService {
 	List<SecondaryIslandLoot> getIslandLoot(int playerIndex);
 	List<SecondaryCompundLoot> getCompoundLoot(int playerIndex);
 	MainLoot getMainLoot(int playerIndex);
+	int getMainLootValue(MainLoot loot);
+	void setMainLootValue(MainLoot loot, int newLootValue);
 	void restartSubmarineComputer();
 	boolean hasScopedLoot(int playerIndex, LootType type);
 	void scopeLoot(LootType type);
@@ -42,5 +43,6 @@ public interface CayoPericoMapService {
 	int getStackLootValue(int playerIndex, LootType type);
 	void setStackLootValue(LootType lootType, int value);
 	void setHardMode(Boolean hardActivated);
+
 
 }

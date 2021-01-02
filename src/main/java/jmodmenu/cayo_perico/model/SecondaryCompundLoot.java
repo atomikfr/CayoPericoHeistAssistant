@@ -1,12 +1,7 @@
 package jmodmenu.cayo_perico.model;
 
-import java.security.InvalidParameterException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
-import lombok.AllArgsConstructor;
 
 // func_899
 // sur la map
@@ -38,13 +33,13 @@ public class SecondaryCompundLoot extends SecondaryLoot {
 				return f(5081.753f, -5754.63f, 15.764f);
 			
 			case 1:
-				return f(5082.945f, -5758.447f, 15.765f); //
+				return f(5082.945f, -5758.447f, 15.765f); // SE
 			
 			case 2:
-				return f(5029.346f, -5733.933f, 17.81f);
+				return f(5029.346f, -5733.933f, 17.81f); // North
 			
 			case 3:
-				return f(5029.777f, -5737.731f, 17.808f); //
+				return f(5029.777f, -5737.731f, 17.808f); 
 			
 			case 4:
 				return f(5012.031f, -5788.325f, 17.773f);
