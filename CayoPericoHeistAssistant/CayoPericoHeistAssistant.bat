@@ -1,1 +1,0 @@
-javaw -jar CayoPericoHeistAssistant.jar

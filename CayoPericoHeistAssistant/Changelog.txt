@@ -2,6 +2,7 @@
 
 WORK STILL IN PROGRESS
 
+* Switch to jpackage distribution
 * Allow to change difficulty level
 * Change zoom view of Compound, Fix loot location on this view
 * Add zoom view for airstrip, north dock, main dock, fields
