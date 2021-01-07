@@ -167,16 +167,28 @@ public class Test_1_52 {
 	// @Test
 	public void getStatRegister() {
 		GtaProcess gta = new GtaProcess();
+		
+		System.out.format("Player slot %d\n", gta.slotNumPlayer());
+		
 		Global gl_MP0_LAP_DANCED_BOUGHT = gta.globals().at(2551832).at(1089, 3).at(0, 1);
 		int MP0_LAP_DANCED_BOUGHT = (int) gl_MP0_LAP_DANCED_BOUGHT.get();		
-		assertEquals(0xca05bafc, MP0_LAP_DANCED_BOUGHT);
+		// assertEquals(0xca05bafc, MP0_LAP_DANCED_BOUGHT);
 		
 		System.out.println( "Global " + gl_MP0_LAP_DANCED_BOUGHT);
 		System.out.format("Stored  : %s\t0x%08x\n", "MP0_LAP_DANCED_BOUGHT", MP0_LAP_DANCED_BOUGHT);
 		
 		int myHash = Utils.joaat("MP0_LAP_DANCED_BOUGHT");
-		assertEquals(0xca05bafc, myHash);
+		// assertEquals(0xca05bafc, myHash);
 		System.out.format("computed: %s\t0x%08x\n", "MP0_LAP_DANCED_BOUGHT", myHash);
+		
+		Global trigger = gta.globals().at(1388013).at(3, 1);
+		System.out.format("Trigger  : %s\t0x%08x\n", "MPPLY_AWD_FM_CR_MISSION_SCORE", trigger.get());
+		System.out.format("computed : %s\t0x%08x\n", "MPPLY_AWD_FM_CR_MISSION_SCORE", Utils.joaat("MPPLY_AWD_FM_CR_MISSION_SCORE"));
+		
+		
+		Global statIndex = gta.globals().at(2589533).at(15, 3).at(0, 1);
+		System.out.format("Index    : %s\t0x%08x\n", "MP0_AWD_LAPDANCES", statIndex.get());
+		System.out.format("computed : %s\t0x%08x\n", "MP0_AWD_LAPDANCES", Utils.joaat("MP0_AWD_LAPDANCES"));
 	}
 	
 	// @Test

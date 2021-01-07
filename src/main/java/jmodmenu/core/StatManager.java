@@ -3,6 +3,7 @@ package jmodmenu.core;
 import static jmodmenu.Utils.joaat;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -25,13 +26,15 @@ public class StatManager {
 	public StatManager(Supplier<Global> globalSupplier, int playerSlot) {
 		this.globalSupplier = globalSupplier;
 		
+		boolean firstSlot = playerSlot == 0;
+		int playerSlotIndex = firstSlot ? 0 : 1;
+		
 		globalStatValue = global(939452).at(5526);
 		globalTrigger = global(1388013).at(3, 1);
-		globalStatIndex = global(2589533).at(15, 3).at(0, 1);
+		globalStatIndex = global(2589533).at(15, 3).at(playerSlotIndex, 1);  
 		globalCheckValue = global(2551544).at(276);
 		globalCounter = global(1377236).at(1136);
 		
-		boolean firstSlot = playerSlot == 0;
 		jMPx_AWD_LAPDANCES     = joaat( firstSlot ? "MP0_AWD_LAPDANCES"     : "MP1_AWD_LAPDANCES" );
 		jMPx_LAP_DANCED_BOUGHT = joaat( firstSlot ? "MP0_LAP_DANCED_BOUGHT" : "MP1_LAP_DANCED_BOUGHT" );
 		jMPPLY_AWD_FM_CR_MISSION_SCORE = joaat("MPPLY_AWD_FM_CR_MISSION_SCORE");
@@ -50,17 +53,22 @@ public class StatManager {
 		globalCounter.set(16L); // Gimme some time
 		int checkValue = (int) globalCheckValue.get();
 		if ( checkValue == value ) {
-			globalCheckValue.set( value == 0 ? 1l : 0l );
+			globalCheckValue.setInt( value == 0 ? 1 : 0 );
 		}
 		globalStatValue.setInt( value );
 		int loop = 0;
 		int current;
-		globalCounter.set(10L); // accelerate counter loop :)
+		globalCounter.set(11L); // accelerate counter loop :)
 		do { 
 			current = (int) globalCheckValue.get();
 			if ( current == value ) break;
 			try {
 				Thread.sleep(50);
+				long counter;
+				if ((loop+1)%4==0 && (counter=globalCounter.get()) > 15L) {
+					log.debug("Global counter has been reset from %d at loop %d", counter, loop);
+					globalCounter.set(11L);
+				}
 			} catch (InterruptedException e) {
 				return -1;
 			}
@@ -104,6 +112,17 @@ public class StatManager {
 
 	public void setStats(Map<Integer, Integer> stats) {
 		inStatWriterContext( stats::forEach );
+	}
+
+	public void setStats(Map<Integer, Integer> stats, Consumer<Integer> listener) {
+		AtomicInteger i = new AtomicInteger( stats.size() );
+		inStatWriterContext( writer -> {
+			stats.forEach( (idx, val) -> {
+				int v = i.decrementAndGet();
+				listener.accept(v);
+				writer.accept(idx, val);
+			});
+		});
 	}
 	
 

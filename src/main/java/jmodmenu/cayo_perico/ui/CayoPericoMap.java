@@ -4,13 +4,16 @@ import static jmodmenu.I18n.txt;
 
 import java.awt.Color;
 import java.awt.DisplayMode;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -24,9 +27,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -85,8 +90,11 @@ public class CayoPericoMap implements MenuContext {
 	MenuCuts menuCuts;
 	MenuHeist menuHeist;
 	
+	int elementInStatQueue; 
+	
 	public  CayoPericoMap(CayoPericoMapService service) {
 		this.service = service;
+		
 		panel = new MapPanel( MapView.ISLAND.imageFile );		
 		setView( MapView.ISLAND );
 
@@ -121,6 +129,31 @@ public class CayoPericoMap implements MenuContext {
 		reloadComputer.addActionListener( event -> service.restartSubmarineComputer() );
 		panel.add(reloadComputer);
 		controlX += 80;
+		
+		URL loadingGif = getClass().getClassLoader().getResource("loading.gif");
+		ImageIcon loadingIcon = new ImageIcon(loadingGif);
+		loadingIcon.setImage( loadingIcon.getImage().getScaledInstance(64, 64, Image.SCALE_DEFAULT) );
+		@SuppressWarnings("serial")
+		JLabel lbl = new JLabel( loadingIcon ) {
+			Font f = new Font("Arial", Font.BOLD, 18);
+			protected void paintComponent(java.awt.Graphics g) {
+				super.paintComponent(g);
+				g.setColor(Color.RED);
+				g.setFont(f);
+				String str = "" + elementInStatQueue;
+				g.drawString(str, str.length() < 2 ? 26 : 22, 40);
+			};
+		};
+		lbl.setOpaque(false);
+		lbl.setBounds(60, 25, 64, 64);
+		lbl.setVisible(false);
+		panel.add(lbl);
+		
+		service.loadingListener( v -> {
+			elementInStatQueue = v;
+			lbl.setVisible(elementInStatQueue > 0);
+			lbl.repaint();
+		});
 		
 		panel.addMouseListener( new MyMouseAdapter() );
 	}

@@ -17,6 +17,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class MenuScopeOut extends MenuAbstract implements MenuScopeAddLootCtx {
+	
+	private final static int 
+		CASH_MASK = 0x01,
+		WEED_MASK = 0x02,
+		COKE_MASK = 0x04,
+		GOLD_MASK = 0x08,
+		PAINT_MASK = 0x10;
 
 	int requestScope = 0;
 	@Getter
@@ -39,15 +46,13 @@ public class MenuScopeOut extends MenuAbstract implements MenuScopeAddLootCtx {
 	protected void back() {
 		lootDataProvider = null;
 		currentLocation = null;
+		context.refreshData();
 		super.back();
 	}
 	
 	@Override
 	protected void save() {
 		lootDataProvider.saveChanges();
-		MapItem.bitStream(5, requestScope)
-		.mapToObj( idx -> LootType.values()[idx] )
-		.forEach( type -> context.service().scopeLoot(type) );
 	}
 	
 	@Override
@@ -71,15 +76,16 @@ public class MenuScopeOut extends MenuAbstract implements MenuScopeAddLootCtx {
 			};
 		
 		Map <String, Integer> itemsConf = new LinkedHashMap<>();
-		itemsConf.put(getLabel.apply(LootType.CASH), 0x1);
-		itemsConf.put(getLabel.apply(LootType.WEED), 0x2);
-		itemsConf.put(getLabel.apply(LootType.COCAINE), 0x4);
-		itemsConf.put(getLabel.apply(LootType.GOLD), 0x8);
-		itemsConf.put(getLabel.apply(LootType.PAINTINGS), 0x10);
+		itemsConf.put(getLabel.apply(LootType.CASH), CASH_MASK);
+		itemsConf.put(getLabel.apply(LootType.WEED), WEED_MASK);
+		itemsConf.put(getLabel.apply(LootType.COCAINE), COKE_MASK);
+		itemsConf.put(getLabel.apply(LootType.GOLD), GOLD_MASK);
+		itemsConf.put(getLabel.apply(LootType.PAINTINGS), PAINT_MASK);
 		
 		int scopedMask = 1;
 		for( LootType type : LootType.values() ) {
-			if ( context.service().hasScopedLoot(playerIndex, type) ) requestScope |= scopedMask;
+			if ( lootDataProvider.scoped(type) || lootDataProvider.hasRequestedScope(type) ) requestScope |= scopedMask;
+			// if ( context.service().hasScopedLoot(playerIndex, type) ) requestScope |= scopedMask;
 			scopedMask = scopedMask << 1;
 		}
 		menuManager
@@ -95,6 +101,13 @@ public class MenuScopeOut extends MenuAbstract implements MenuScopeAddLootCtx {
 	}
 	private Consumer<Boolean> maskingIfSelectedScope(int mask) {
 		return b -> {
+			LootType type;
+			if ( mask == CASH_MASK ) type = LootType.CASH;
+			else if ( mask == WEED_MASK ) type = LootType.WEED;
+			else if ( mask == COKE_MASK ) type = LootType.COCAINE;
+			else if ( mask == GOLD_MASK ) type = LootType.GOLD;
+			else type = LootType.PAINTINGS;
+			lootDataProvider.requestScoping(type, b);
 			if (b) {
 				requestScope |= mask;
 			} else {

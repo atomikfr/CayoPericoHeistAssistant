@@ -2,6 +2,7 @@ package jmodmenu.cayo_perico.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import jmodmenu.cayo_perico.model.LootType;
 import jmodmenu.cayo_perico.model.MainLoot;
@@ -43,6 +44,7 @@ public interface CayoPericoMapService {
 	int getStackLootValue(int playerIndex, LootType type);
 	void setStackLootValue(LootType lootType, int value);
 	void setHardMode(Boolean hardActivated);
+	void loadingListener(Consumer<Integer> loadingFunction);
 
 
 }

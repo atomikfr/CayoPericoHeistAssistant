@@ -31,8 +31,10 @@ public class LootDataProvider {
 	
 	private  Map<LootType, Integer> scopeIslandData = new HashMap<>();
 	private  Map<LootType, Integer> scopeCompoundData = new HashMap<>();
+	private  Map<LootType, Boolean> requestScoping = new HashMap<>();
 	
-	boolean changed = false;
+	boolean lootChanged = false;
+	boolean scopeChanged = false;
 	
 	public void reload() {
 		secondaryIslandLoot = new LinkedList<>( service.getIslandLoot(playerIndex) );
@@ -73,7 +75,8 @@ public class LootDataProvider {
 				.orElse(null);
 		if ( found != null ) {
 			loots.remove(found);
-			changed = true;
+			lootChanged = true;
+			requestScoping(found.getType(), true);
 		}
 	}
 	
@@ -85,7 +88,8 @@ public class LootDataProvider {
 				.orElse(null);
 		if ( found != null ) {
 			secondaryCompundLoot.remove(found);
-			changed = true;
+			lootChanged = true;
+			requestScoping(LootType.PAINTINGS, true);
 		}
 	}
 	
@@ -97,27 +101,43 @@ public class LootDataProvider {
 			SecondaryCompundLoot loot = new SecondaryCompundLoot(type, idx);
 			secondaryCompundLoot.add(loot);
 		}
-		changed = true;
+		lootChanged = true;
+		requestScoping(type, true);
+	}
+	
+	public void requestScoping(LootType type, boolean scope) {
+		scopeChanged = true;
+		requestScoping.put(type, scope);
 	}
 
 	public void saveChanges() {
-		if ( !changed ) {
-			log.info("No changes made on loots");
-			return;
-		}
 		
 		for(LootType type: LootType.values()) {
 			if ( type != LootType.PAINTINGS ) {
 				int mask = generateScopeMask(type, true);
-				log.debug( String.format("Island loot %s mask[%08x]", type.name(), mask) );
-				service.setLootPosition(type, true, mask);
-				service.setLootScope(type, true, mask);
+				if ( lootChanged ) {
+					log.debug( String.format("Island loot %s mask[%08x]", type.name(), mask) );
+					service.setLootPosition(type, true, mask);
+				}
+				if ( scopeChanged ) {
+					int scopingMask = requestScoping.getOrDefault(type, false) ? mask : 0;
+					service.setLootScope(type, true, scopingMask);
+				}
 			}
 			int mask = generateScopeMask(type, false);
-			log.debug(  String.format("Compound loot %s mask[%08x]", type.name(), mask) );
-			service.setLootPosition(type, false, mask);
-			service.setLootScope(type, false, mask);
+			if ( lootChanged ) {
+				log.debug(  String.format("Compound loot %s mask[%08x]", type.name(), mask) );
+				service.setLootPosition(type, false, mask);
+			}
+			if ( scopeChanged ) {
+				int scopingMask = requestScoping.getOrDefault(type, false) ? mask : 0;
+				service.setLootScope(type, false, scopingMask);
+			}
 		}
+	}
+
+	public boolean hasRequestedScope(LootType type) {
+		return requestScoping.getOrDefault(type, false);
 	}
 
 }

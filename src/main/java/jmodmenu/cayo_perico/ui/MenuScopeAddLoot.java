@@ -3,6 +3,7 @@ package jmodmenu.cayo_perico.ui;
 import static jmodmenu.I18n.txt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,6 +84,7 @@ public class MenuScopeAddLoot extends MenuAbstract {
 				changeLootCallbackFor(k, island)
 			);
 		}
+		context.setView(locationView.get(currentLocation));
 		refreshViewCustomLoots();
 	}
 	
@@ -90,6 +92,7 @@ public class MenuScopeAddLoot extends MenuAbstract {
 	protected void back() {
 		if ( previousView != null ) {
 			context.setView(previousView);
+			refreshViewCustomLoots();
 			previousView = null;
 		}
 		super.back();
@@ -151,14 +154,17 @@ public class MenuScopeAddLoot extends MenuAbstract {
 			menuManager.addPaintLocation((j+1), place, hasPaintAt.apply(j), (idx, b) -> {});
 		}
 		context.setView(MapView.COMPOUND);
+		refreshViewCustomLoots();
 	}
 	
 	private void refreshViewCustomLoots() {
 		List<MapItem> items = new LinkedList<>( /* service.getEquipment(playerIndex) */ );
-		items.addAll( lootDataProvider.getSecondaryIslandLoot() );
-		items.addAll( lootDataProvider.getSecondaryCompundLoot() );
+		if ( Arrays.asList("compound","paintings").contains(currentLocation) )
+			items.addAll( lootDataProvider.getSecondaryCompundLoot() );
+		else
+			items.addAll( lootDataProvider.getSecondaryIslandLoot() );
+		//context.setView(locationView.get(currentLocation));
 		context.setMapItems(items);
-		context.setView(locationView.get(currentLocation));
 	}
 	
 }

@@ -10,6 +10,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import jmodmenu.GtaProcess;
 import jmodmenu.Utils;
@@ -37,6 +38,8 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	volatile boolean stoppingQueue = false;
 	volatile int inProgress = 0;
 	
+	Consumer<Integer> updateListener;
+	
 	int slotPlayer; // 0 or 1
 
 	
@@ -44,6 +47,11 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 		this.gta = gta;
 		queue = new ConcurrentLinkedQueue<>();
 		new Thread( this::loopStatQueue, "batchStatWriter" ).start();
+	}
+	
+	@Override
+	public void loadingListener(Consumer<Integer> loadingFunction) {
+		this.updateListener = loadingFunction;
 	}
 	
 	
@@ -109,7 +117,10 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 				if ( ++nb >= 20 ) break;
 			}
 			log.debug("Batching {} stat values", stats.size());
-			gta.getStatManager().setStats( stats );
+			gta.getStatManager().setStats( stats, v -> {
+				int totalLeft = queueSize - inProgress + v;
+				if ( updateListener != null ) updateListener.accept(totalLeft);
+			});
 			inProgress = 0;
 			lastPush.set( System.currentTimeMillis() );
 		}

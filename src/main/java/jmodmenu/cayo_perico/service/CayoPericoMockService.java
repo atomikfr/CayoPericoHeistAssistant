@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import jmodmenu.cayo_perico.model.LootType;
 import jmodmenu.cayo_perico.model.MainLoot;
@@ -34,6 +35,9 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	public int getLocalPlayerIndex() {
 		return 0;
 	}
+	
+	@Override
+	public void loadingListener(Consumer<Integer> loadingFunction) {}
 
 	@Override
 	public List<MapItem> getEquipment(int playerIndex) {
