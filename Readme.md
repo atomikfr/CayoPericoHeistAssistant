@@ -1,6 +1,6 @@
 # Cayo Perico Heist Assistant
 
-Take a loot at [CayoPericoAssistant/README.txt](CayoPericoAssistant/README.txt) for Usage.
+Take a loot at [CayoPericoHeistAssistant/README.txt](CayoPericoHeistAssistant/README.txt) for Usage.
 
 ## How to build
 
