@@ -2,6 +2,7 @@
 
 WORK STILL IN PROGRESS
 
+* Switch to jpackage distribution
 * Allow to change difficulty level
 * Add a "loading" animation while data are saved to the game
 * Change zoom view of Compound, Fix loot location on this view
