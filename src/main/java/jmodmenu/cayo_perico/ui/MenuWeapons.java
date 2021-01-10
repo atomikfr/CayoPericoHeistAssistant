@@ -35,6 +35,7 @@ public class MenuWeapons extends MenuAbstract {
 			txt("weapons.suppressors"),  0x1000
 		);
 		menuManager
+		.addSpacer()
 		.checkIndexItems(itemsConf, MP0_H4CNF_WEAPONS, this::setWeaponIndex )
 		.checkMaskItems(suppressorConf, MP0_H4_MISSIONS, i -> this::setSuppressors );
 

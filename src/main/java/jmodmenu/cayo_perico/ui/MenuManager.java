@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import javax.swing.JButton;
@@ -19,6 +21,7 @@ import javax.swing.SwingConstants;
 
 import jmodmenu.I18n;
 import jmodmenu.cayo_perico.model.LootType;
+import jmodmenu.cayo_perico.model.MapItem;
 import jmodmenu.cayo_perico.model.SecondaryLoot;
 
 class MenuManager {
@@ -42,10 +45,12 @@ class MenuManager {
 		if ( itemsConf.size() == 0 ) return this;
 		final List<JCheckBox> boxes = new ArrayList<>();
 		
-		manager.y += 10;
-		IntStream.range(0, itemsConf.size() - 1).forEach( (idx) -> {
+		// manager.y += 10;
+		// IntStream.range(0, itemsConf.size() - 1).forEach( (idx) -> {
+		for ( int idx = 0; idx < itemsConf.size(); idx++ ) {
 			String name = itemsConf.get(idx);
 			AtomicReference<JCheckBox> boxReference = new AtomicReference<>();
+			final int localIdx = idx;
 			JCheckBox box = manager.addCheck(name.toUpperCase(), idx == value, b -> {
 				if ( !b ) {
 					boxReference.get().setSelected(true);
@@ -56,12 +61,12 @@ class MenuManager {
 						other.setSelected(false);
 					}
 					panel.repaint();
-					action.accept(idx);
+					action.accept(localIdx);
 				}
 			});
 			boxReference.set(box);
 			boxes.add(box);
-		});
+		};
 		panel.repaint();
 		return this;
 	}
@@ -170,7 +175,7 @@ class MenuManager {
 		final int idx = j;
 		
 		Function<LootType, Boolean> hasLootAt = (type) -> allLoots.stream()
-			.filter( loot -> loot.getIdx() == idx )
+			.filter( loot -> loot.getId() == idx )
 			.filter( loot -> loot.getType() == type )
 			.findAny()
 			.isPresent();
@@ -203,6 +208,42 @@ class MenuManager {
 		return this;
 	}
 	
+	public void addGroupLocationChooser( List<String> currentLocations, Consumer<String> locationSelectorCb ) {
+		
+		Consumer<Character> addLabelGroup = (c) -> {
+			JLabel lbl = manager.addLabel(""+c);
+			lbl.setSize(40, 30);
+			manager.x += 40;
+			manager.y -= 30;			
+		};
+		
+		String locationGroups = "ABCD";
+		String locationSpots = "1234";
+		
+		for (Character group : locationGroups.toCharArray()) {
+			addLabelGroup.accept(group);
+			List<JCheckBox> boxes = new ArrayList<>(8);
+			for (Character spot : locationSpots.toCharArray()) {
+				String locIdx = group + "" + spot;
+				AtomicReference<JCheckBox> my = new AtomicReference<>();
+				JCheckBox box = manager.addCheck("", currentLocations.contains(locIdx), (b) -> {
+					for( JCheckBox other : boxes ) other.setSelected(false);
+					my.get().setSelected(true);
+					locationSelectorCb.accept(locIdx);
+				} );
+				my.set(box);
+				boxes.add(box);
+				box.setSize(40, 30);
+				manager.x += 40;
+				manager.y -= 30;
+			}
+			manager.x = 10;
+			manager.y += 30;
+		}
+
+		
+	}
+
 	public MenuManager addNavBar(Runnable prevCallback, Runnable nextCallback) {
 		JButton btn1 = manager.addButton("< prec", prevCallback);
 		btn1.setSize(80, 30);

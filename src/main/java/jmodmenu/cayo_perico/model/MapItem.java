@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 
 public interface MapItem {
 	
+	int getId();
 	String name();
 	float[] position();
 	

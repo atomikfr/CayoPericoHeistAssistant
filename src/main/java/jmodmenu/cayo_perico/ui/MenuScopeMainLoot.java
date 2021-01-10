@@ -26,6 +26,7 @@ public class MenuScopeMainLoot extends MenuAbstract {
 			.map( l -> txt("loots."+l.name().toLowerCase() ) )
 			.collect( Collectors.toList() );
 		menuManager
+		.addSpacer()
 		.checkIndexItems(itemsConf, loot.ordinal(), this::setSelectedLoot );
 	}
 	

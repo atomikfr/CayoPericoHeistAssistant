@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import jmodmenu.GtaProcess;
 import jmodmenu.Utils;
 import jmodmenu.cayo_perico.model.BoltCutters;
+import jmodmenu.cayo_perico.model.Equipment;
 import jmodmenu.cayo_perico.model.GrapplingEquipment;
 import jmodmenu.cayo_perico.model.GuardTruck;
 import jmodmenu.cayo_perico.model.GuardUniform;
@@ -56,11 +57,17 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	
 	
 	/**
-	 * Try to replace MP0_ with current player slot
+	 * Try to replace MP0_ with current player slot.
+	 * Also works with MPX and MPx
 	 */
 	public void setStat(String name, Integer value) {
-		if ( name.startsWith("MP0") && slotPlayer > 0 ) {
-			name = "MP"+slotPlayer+name.substring(3);
+		if ( name.startsWith("MP") ) {
+			char x = name.charAt(2);
+			if ( x == 'X' || x == 'x' ) {
+				name = "MP"+slotPlayer+name.substring(3);
+			} else if (x == '0' && slotPlayer > 0) {
+				name = "MP"+slotPlayer+name.substring(3);
+			}
 		}
 		int joaat = Utils.joaat(name);
 		log.debug("Setting Stat[{}] Joaat[{}] to Value[{}]", name, joaat, value);
@@ -190,6 +197,11 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	
 	private int getEquipmentPosition(int playerIndex, int index) {
 		return (int) glPerico(playerIndex).at(5).at(index).get();
+	}
+	
+	@Override
+	public void setEquipmentPosition(Equipment equipment, int positionValue) {
+		setStat(equipment.getStatName(), positionValue);
 	}
 	
 	private int getLootPosition(int playerIndex, int index) {

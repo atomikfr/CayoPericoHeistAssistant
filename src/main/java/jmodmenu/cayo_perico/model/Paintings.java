@@ -12,7 +12,7 @@ public class Paintings extends SecondaryCompundLoot {
 	
 	@Override
 	public float[] position() {
-		int iParam0 = idx;
+		int iParam0 = id;
 		switch (iParam0)
 		{
 			case 0:

@@ -1,10 +1,13 @@
 package jmodmenu.cayo_perico.model;
 
+import lombok.Getter;
+
 // Global_1706028[iParam0 /*53*/].f_5.f_34
 public class GuardTruck implements MapItem {
 	
 	public final static String NAME = "GUARD_TRUCK";
 	
+	@Getter
 	int id;
 	
 	public GuardTruck(int id) {

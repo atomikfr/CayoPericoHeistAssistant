@@ -3,10 +3,13 @@ package jmodmenu.cayo_perico.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
+
 public class BoltCutters implements MapItem {
 	
 	public final static String NAME = "BOLT_CUTTERS";
 	
+	@Getter
 	int id;
 	
 	public BoltCutters() {

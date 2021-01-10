@@ -145,7 +145,7 @@ public class MenuScopeAddLoot extends MenuAbstract {
 		
 		Function<Integer, Boolean> hasPaintAt = (idx) -> lootDataProvider.getSecondaryCompundLoot()
 				.stream()
-				.filter( loot -> loot.getIdx() == idx )
+				.filter( loot -> loot.getId() == idx )
 				.filter( loot -> loot.getType() == LootType.PAINTINGS )
 				.findAny()
 				.isPresent();

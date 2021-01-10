@@ -26,7 +26,7 @@ public class SecondaryCompundLoot extends SecondaryLoot {
 	 */
 	@Override
 	public float[] position() {
-		int iParam0 = idx;
+		int iParam0 = id;
 		switch (iParam0)
 		{
 			case 0:

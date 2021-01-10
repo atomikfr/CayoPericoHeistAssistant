@@ -61,7 +61,7 @@ public class MenuScopeOut extends MenuAbstract implements MenuScopeAddLootCtx {
 		
 		// int playerIndex = selectedPlayer.getIndex();
 		if ( lootDataProvider == null ) {
-			lootDataProvider = new LootDataProvider(context.service(), playerIndex);
+			lootDataProvider = new LootDataProvider(service, playerIndex);
 			lootDataProvider.reload();
 		}
 		
@@ -84,7 +84,7 @@ public class MenuScopeOut extends MenuAbstract implements MenuScopeAddLootCtx {
 		
 		int scopedMask = 1;
 		for( LootType type : LootType.values() ) {
-			if ( lootDataProvider.scoped(type) || lootDataProvider.hasRequestedScope(type) ) requestScope |= scopedMask;
+			if ( lootDataProvider.hasRequestedScope(type) ) requestScope |= scopedMask;
 			// if ( context.service().hasScopedLoot(playerIndex, type) ) requestScope |= scopedMask;
 			scopedMask = scopedMask << 1;
 		}

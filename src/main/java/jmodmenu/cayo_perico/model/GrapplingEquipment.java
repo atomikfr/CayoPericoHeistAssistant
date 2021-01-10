@@ -3,11 +3,14 @@ package jmodmenu.cayo_perico.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
+
 // Global_1706028[iParam0 /*53*/].f_5.f_3
 public class GrapplingEquipment implements MapItem {
 	
 	public final static String NAME = "GRAPPLING_EQUIPMENT";
 	
+	@Getter
 	int id;
 	
 	public GrapplingEquipment(int idx) {

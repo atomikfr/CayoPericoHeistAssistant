@@ -7,6 +7,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import jmodmenu.cayo_perico.model.BoltCutters;
+import jmodmenu.cayo_perico.model.Equipment;
+import jmodmenu.cayo_perico.model.GrapplingEquipment;
+import jmodmenu.cayo_perico.model.GuardTruck;
+import jmodmenu.cayo_perico.model.GuardUniform;
 import jmodmenu.cayo_perico.model.LootType;
 import jmodmenu.cayo_perico.model.MainLoot;
 import jmodmenu.cayo_perico.model.MapItem;
@@ -15,7 +20,9 @@ import jmodmenu.cayo_perico.model.SecondaryCompundLoot;
 import jmodmenu.cayo_perico.model.SecondaryIslandLoot;
 import jmodmenu.cayo_perico.model.SecondaryLoot;
 import jmodmenu.core.PlayerInfo;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CayoPericoMockService implements CayoPericoMapService {
 
 	@Override
@@ -42,7 +49,7 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	@Override
 	public List<MapItem> getEquipment(int playerIndex) {
 		return Arrays.asList(
-				/*
+				/* */
 			new GrapplingEquipment(2),
 			new GrapplingEquipment(5),
 			new GrapplingEquipment(10),
@@ -59,8 +66,13 @@ public class CayoPericoMockService implements CayoPericoMapService {
 			new BoltCutters(15),
 			
 			new GuardTruck(3)
-			*/
+			/* */
 		);
+	}
+	
+	@Override
+	public void setEquipmentPosition(Equipment equipment, int positionValue) {
+		log.info("Set equipment {} to value[{}]", equipment, positionValue);
 	}
 	
 	@Override
@@ -87,9 +99,9 @@ public class CayoPericoMockService implements CayoPericoMapService {
 				/* Airstrip */
 			new SecondaryIslandLoot(LootType.CASH, 0),
 			new SecondaryIslandLoot(LootType.CASH, 1),
-			new SecondaryIslandLoot(LootType.CASH, 2),
+			// new SecondaryIslandLoot(LootType.CASH, 2),
 			new SecondaryIslandLoot(LootType.CASH, 3),
-			new SecondaryIslandLoot(LootType.CASH, 4),
+			// new SecondaryIslandLoot(LootType.CASH, 4),
 			new SecondaryIslandLoot(LootType.CASH, 5),
 				/* */
 				/* North Dock */
@@ -122,20 +134,20 @@ public class CayoPericoMockService implements CayoPericoMapService {
 	@Override
 	public List<SecondaryCompundLoot> getCompoundLoot(int playerIndex) {
 		return Arrays.asList(
-			new Paintings(0),
+			// new Paintings(0),
 			new Paintings(1),
 			new Paintings(2),
 			new Paintings(3),
 			new Paintings(4),
 			new Paintings(5),
-			new Paintings(6),
-			new SecondaryCompundLoot(LootType.CASH, 0),
+			// new Paintings(6),
+			// new SecondaryCompundLoot(LootType.CASH, 0),
 			new SecondaryCompundLoot(LootType.CASH, 1),
-			new SecondaryCompundLoot(LootType.CASH, 2),
-			new SecondaryCompundLoot(LootType.CASH, 3),
+			new SecondaryCompundLoot(LootType.GOLD, 2),
+			// new SecondaryCompundLoot(LootType.CASH, 3),
 			new SecondaryCompundLoot(LootType.CASH, 4),
-			new SecondaryCompundLoot(LootType.CASH, 5),
-			new SecondaryCompundLoot(LootType.CASH, 6),
+			new SecondaryCompundLoot(LootType.GOLD, 5),
+			// new SecondaryCompundLoot(LootType.CASH, 6),
 			new SecondaryCompundLoot(LootType.CASH, 7)
 		);
 	}
@@ -153,7 +165,7 @@ public class CayoPericoMockService implements CayoPericoMapService {
 		AtomicInteger mask = new AtomicInteger();
 		loots.stream()
 			.filter( loot -> loot.getType() == type )
-			.forEach( loot -> mask.set(mask.get() | (1 << loot.getIdx())) );
+			.forEach( loot -> mask.set(mask.get() | (1 << loot.getId())) );
 		return mask.get();
 	}
 	

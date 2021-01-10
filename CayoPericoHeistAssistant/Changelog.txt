@@ -3,6 +3,7 @@
 WORK STILL IN PROGRESS
 
 * Switch to jpackage distribution
+* Allow to set position of each Equipment (bolt cutters, uniform, grappling, truck)
 * Allow to change difficulty level
 * Add a "loading" animation while data are saved to the game
 * Change zoom view of Compound, Fix loot location on this view
@@ -13,6 +14,7 @@ WORK STILL IN PROGRESS
 * Allow to change stack value of additional loot type
 * Compute additional loot value
 * Fix Main loot value if hard mode enable
+* Fix Weapons selection to show them all
 * Fix Diamond loot value, in general loot value are now read from game
 * Fix potential issue in stat manager, allow stat modification for both character
 * (code) Split Menus in different classes

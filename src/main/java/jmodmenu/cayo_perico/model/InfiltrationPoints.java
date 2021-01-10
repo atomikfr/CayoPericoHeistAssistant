@@ -1,7 +1,10 @@
 package jmodmenu.cayo_perico.model;
 
+import lombok.Getter;
+
 public class InfiltrationPoints implements MapItem {
 	
+	@Getter
 	int id;
 	
 	/**

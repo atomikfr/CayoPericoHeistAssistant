@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import jmodmenu.cayo_perico.model.Equipment;
 import jmodmenu.cayo_perico.model.LootType;
 import jmodmenu.cayo_perico.model.MainLoot;
 import jmodmenu.cayo_perico.model.MapItem;
@@ -45,6 +46,7 @@ public interface CayoPericoMapService {
 	void setStackLootValue(LootType lootType, int value);
 	void setHardMode(Boolean hardActivated);
 	void loadingListener(Consumer<Integer> loadingFunction);
+	void setEquipmentPosition(Equipment equipment, int positionValue);
 
 
 }

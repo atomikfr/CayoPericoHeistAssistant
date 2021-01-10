@@ -3,11 +3,14 @@ package jmodmenu.cayo_perico.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
+
 
 public class GuardUniform implements MapItem {
 	
 	public final static String NAME = "GUARD_UNIFORM";
 	
+	@Getter
 	int id;
 	
 	public GuardUniform(int id) {

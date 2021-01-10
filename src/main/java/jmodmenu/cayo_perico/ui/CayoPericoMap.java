@@ -412,11 +412,12 @@ public class CayoPericoMap implements MenuContext {
 
 	public static void main(String[] args) {
 		
-		log.info("Running Cayo Perico Assistant");
-		
+		final String VERSION = "0.10 Beta 3";
 		boolean simulated = false;
-		CayoPericoMapService service;
 		
+		log.info("Running Cayo Perico Heist Assistant " + VERSION);
+		
+		CayoPericoMapService service;
 		String lang = Optional.ofNullable(System.getProperty("user.language"))
 				.orElse("en")
 				.toLowerCase();
@@ -451,7 +452,7 @@ public class CayoPericoMap implements MenuContext {
     		cayoPericoMap.setMaxHeight( mode.getHeight() );
     		// cayoPericoMap.setMaxHeight( 800 );
     		cayoPericoMap.setPlayers(players);
-			JFrame frame = new JFrame("Cayo Perico Heist Assistant");
+			JFrame frame = new JFrame("Cayo Perico Heist Assistant " + VERSION);
 			frame.getContentPane().add(cayoPericoMap.panel);
 			frame.pack();
 			frame.setLocation(50, 50);

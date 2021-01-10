@@ -20,7 +20,6 @@ public abstract class MenuAbstract implements MenuItf {
 	
 	public MenuAbstract(MenuContext context) {
 		this.context = context;
-
 	}
 	
 	public void whenBack(Runnable backMenuAction) {
