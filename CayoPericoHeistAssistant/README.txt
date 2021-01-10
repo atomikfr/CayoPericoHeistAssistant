@@ -72,6 +72,6 @@ WARNING __________________________________________________
 ## Thanks ###########################
 
  - polivias
- - Joseph Mendoza
+ - josephsmendoza
  - unknowncheats Community
 
