@@ -9,7 +9,7 @@ public enum MainLoot {
 	BONDS("bonds", 1100000),
 	DIAMOND("diamond", 1300000),
 	FILES("files", 1100000),
-	STATUT("statue", 1900000);
+	STATUE("statue", 1900000);
 	
 	String text;
 	int value;
