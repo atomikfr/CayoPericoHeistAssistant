@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.atomik</groupId>
   <artifactId>cayo-perico-heist-assistant</artifactId>
-  <version>0.10-SNAPSHOT</version>
+  <version>0.11-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
