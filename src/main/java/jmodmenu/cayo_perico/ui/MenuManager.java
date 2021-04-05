@@ -43,7 +43,7 @@ class MenuManager {
 		final List<JCheckBox> boxes = new ArrayList<>();
 		
 		manager.y += 10;
-		IntStream.range(0, itemsConf.size() - 1).forEach( (idx) -> {
+		IntStream.range(0, itemsConf.size()).forEach( (idx) -> {
 			String name = itemsConf.get(idx);
 			AtomicReference<JCheckBox> boxReference = new AtomicReference<>();
 			JCheckBox box = manager.addCheck(name.toUpperCase(), idx == value, b -> {

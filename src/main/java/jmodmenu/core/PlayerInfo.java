@@ -13,7 +13,7 @@ public class PlayerInfo  {
 
 	public static PlayerInfo fromPointer(Ptr ptr) {
 		PlayerInfo playerInfo = new PlayerInfo();
-		playerInfo.name = ptr.copy().add(0x0084).readString(20);
+		playerInfo.name = ptr.copy().add(0x00A4).readString(20);
 		return playerInfo;
 	}
 	

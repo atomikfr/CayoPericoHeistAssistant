@@ -31,8 +31,8 @@ public class StatManager {
 		
 		globalStatValue = global(939452).at(5526);
 		globalTrigger = global(1388013).at(3, 1);
-		globalStatIndex = global(2589533).at(15, 3).at(playerSlotIndex, 1);  
-		globalCheckValue = global(2551544).at(276);
+		globalStatIndex = global(2589761).at(15, 3).at(playerSlotIndex, 1);
+		globalCheckValue = global(2551772).at(276);
 		globalCounter = global(1377236).at(1136);
 		
 		jMPx_AWD_LAPDANCES     = joaat( firstSlot ? "MP0_AWD_LAPDANCES"     : "MP1_AWD_LAPDANCES" );
