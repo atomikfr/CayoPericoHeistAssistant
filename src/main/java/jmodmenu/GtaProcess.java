@@ -83,7 +83,7 @@ public class GtaProcess {
 	
 	public int localPlayerIndex() {
 		// act_cinema : func_865 !iParam0 == Global_2440049
-		return (int) globals().at(2440049).get();
+		return (int) globals().at(2440277).get();
 	}
 	
 	public int slotNumPlayer() {
