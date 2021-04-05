@@ -31,7 +31,7 @@ public class NetPlayerManager extends RefPtr {
 			PlayerInfo playerInfo = PlayerInfo.fromPointer(
 					cNetGamePlayer.copy()
 					.indirect64()
-					.add(0x00B0)
+					.add(0x00A0)
 					.indirect64()
 				);
 			playerInfo.setIndex(i);

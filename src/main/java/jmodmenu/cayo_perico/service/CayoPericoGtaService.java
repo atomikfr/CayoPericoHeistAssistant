@@ -157,7 +157,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	 * @param playerIndex in session (0-31)
 	 */
 	private Global glPerico(int playerIndex) {
-		return gta.globals().at(1706028).at(playerIndex, 53);
+		return gta.globals().at(1706031).at(playerIndex, 53);
 	}
 	
 	/**
@@ -165,7 +165,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	 * @param playerIndex in heist (0-4)
 	 */
 	private Global glCuts(int playerIndex) {
-		return gta.globals().at(1704127).at(823).at(56).at(playerIndex, 1);
+		return gta.globals().at(1704130).at(823).at(56).at(playerIndex, 1);
 	}
 	
 	/**
@@ -174,13 +174,13 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	 */
 	private Global glMainLoot(MainLoot loot) {
 		Global glLootValue = gta.globals().at(262145);
-		int offset = 29233 + loot.ordinal();
+		int offset = 29234 + loot.ordinal();
 		glLootValue.at(offset);
 		return glLootValue;
 	}
 	
 	private Global glBagSize() {
-		return gta.globals().at(262145).at(28999);
+		return gta.globals().at(262145).at(29000);
 	}
 	
 	

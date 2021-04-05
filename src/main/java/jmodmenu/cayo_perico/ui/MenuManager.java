@@ -45,9 +45,8 @@ class MenuManager {
 		if ( itemsConf.size() == 0 ) return this;
 		final List<JCheckBox> boxes = new ArrayList<>();
 		
-		// manager.y += 10;
-		// IntStream.range(0, itemsConf.size() - 1).forEach( (idx) -> {
-		for ( int idx = 0; idx < itemsConf.size(); idx++ ) {
+		manager.y += 10;
+		IntStream.range(0, itemsConf.size()).forEach( (idx) -> {
 			String name = itemsConf.get(idx);
 			AtomicReference<JCheckBox> boxReference = new AtomicReference<>();
 			final int localIdx = idx;
@@ -66,7 +65,7 @@ class MenuManager {
 			});
 			boxReference.set(box);
 			boxes.add(box);
-		};
+		});
 		panel.repaint();
 		return this;
 	}

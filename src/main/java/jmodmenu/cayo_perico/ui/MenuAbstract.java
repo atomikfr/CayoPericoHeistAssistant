@@ -46,11 +46,8 @@ public abstract class MenuAbstract implements MenuItf {
 	abstract void content(MenuManager menuManager);
 	
 	protected void evaluateContext() {
-		playerIndex = context.service().getLocalPlayerIndex();
-		isLocalPlayerSelected =  Optional.ofNullable(context.selectedPlayer())
-			.map( PlayerInfo::getIndex )
-			.map( i -> i == playerIndex )
-			.orElse(false);
+		playerIndex = context.selectedPlayer().getIndex();
+		isLocalPlayerSelected =  playerIndex == context.service().getLocalPlayerIndex();
 		service = context.service();
 	}
 	
@@ -72,4 +69,3 @@ interface MenuContext {
 	void setView(MapView mapView);
 	void setMapItems(List<MapItem> items);
 }
-

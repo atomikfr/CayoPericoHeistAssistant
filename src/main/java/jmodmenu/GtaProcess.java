@@ -63,7 +63,7 @@ public class GtaProcess {
 				.indirect64() // *CPedFactory
 				.add(8) // CPed*
 				.indirect64() // CPed
-				.add(0x10B8 + 16)  // padding to ... *CPlayerInfo +8 because of vTable +8 because of array length stored first (??)
+				.add(0x10C8)  // padding to ... *CPlayerInfo +8 because of vTable +8 because of array length stored first (??)
 				.indirect64() // CPlayerInfo
 		);
 		log.info( "localPlayerInfo at {}", playerInfo);
