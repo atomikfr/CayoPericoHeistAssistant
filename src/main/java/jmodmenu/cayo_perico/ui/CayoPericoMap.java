@@ -412,7 +412,7 @@ public class CayoPericoMap implements MenuContext {
 
 	public static void main(String[] args) {
 		
-		final String VERSION = "0.10 Beta 3";
+		final String VERSION = "0.10 Beta 4";
 		boolean simulated = false;
 		
 		log.info("Running Cayo Perico Heist Assistant " + VERSION);
