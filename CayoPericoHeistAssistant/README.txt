@@ -68,6 +68,7 @@ WARNING __________________________________________________
  - Compound loot placement are erroneous for now. 
    Still have to work on this.
 
+- A player's final take over 5M won't be payed out. This is a limit of the heist.
 
 ## Thanks ###########################
 
