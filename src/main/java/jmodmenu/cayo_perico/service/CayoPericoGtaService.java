@@ -119,7 +119,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 			Map<Integer, Integer> stats = new LinkedHashMap<>();
 			StatEntry entry;
 			while ( !stoppingQueue && (entry = queue.poll()) != null ) {
-				inProgress++; 
+				inProgress++;
 				stats.put(entry.joaat, entry.value);
 				if ( ++nb >= 20 ) break;
 			}
@@ -157,7 +157,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	 * @param playerIndex in session (0-31)
 	 */
 	private Global glPerico(int playerIndex) {
-		return gta.globals().at(1706031).at(playerIndex, 53);
+		return gta.globals().at(1975399).at(playerIndex, 53);
 	}
 	
 	/**
@@ -165,7 +165,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	 * @param playerIndex in heist (0-4)
 	 */
 	private Global glCuts(int playerIndex) {
-		return gta.globals().at(1704130).at(823).at(56).at(playerIndex, 1);
+		return gta.globals().at(1973496).at(823).at(56).at(playerIndex, 1);
 	}
 	
 	/**
@@ -174,13 +174,13 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	 */
 	private Global glMainLoot(MainLoot loot) {
 		Global glLootValue = gta.globals().at(262145);
-		int offset = 29234 + loot.ordinal();
+		int offset = 29616 + loot.ordinal();
 		glLootValue.at(offset);
 		return glLootValue;
 	}
 	
 	private Global glBagSize() {
-		return gta.globals().at(262145).at(29000);
+		return gta.globals().at(262145).at(29379);
 	}
 	
 	
@@ -268,7 +268,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 			return getLootPosition(playerIndex, 17) == getLootPosition(playerIndex, 18);
 		
 		int from = type.ordinal();
-		return 
+		return
 			getLootPosition(playerIndex, from+1) == getLootPosition(playerIndex, from+5)
 			&& getLootPosition(playerIndex, from+9) == getLootPosition(playerIndex, from+13);
 	}
@@ -305,7 +305,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	@Override
 	public void setLootScope(LootType type, boolean island, int value) {
 		/*
-		int[] joaats = 
+		int[] joaats =
 			island ? new int[] {-1690987375, 834429412, 611902845, 1712421353}
 				: new int[] { -670391016, -404469783, -2365219, -1409842437};
 		int joaat = type == LootType.PAINTINGS ? 1775008747 : joaats[ type.ordinal() ];
@@ -319,7 +319,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	@Override
 	public void setLootPosition(LootType type, boolean island, int value) {
 		/*
-		int[] joaats = 
+		int[] joaats =
 			island ? new int[] { -1646922924, -781945763, -1003353535, -1153023047 }
 				: new int[] { -399833087, 1093424111, 972322244, 803319022 };
 		
@@ -442,7 +442,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	
 	@Override
 	public void setCuts(Integer[] values) {
-		for (int j = 0; j < values.length; j++) {			
+		for (int j = 0; j < values.length; j++) {
 			glCuts(j).set( (long) values[j] );
 			// 823-67(j, 1) -> ready state ?
 		}
@@ -486,17 +486,17 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	
 	@Override
 	public boolean isHardMode(int playerIndex) {
-		// MPx_H4_PROGRESS 
+		// MPx_H4_PROGRESS
 		long register = glPerico(playerIndex).at(1).get();
 		int mask = 1 << 12;
 		boolean hard = (register & mask) > 0;
 		log.debug("Hard mode register[{}] mask[{}] boolean[{}]", register, mask, hard);
-		return hard; 
+		return hard;
 	}
 	
 	@Override
 	public void setHardMode(Boolean hardActivated) {
-		// MPx_H4_PROGRESS 
+		// MPx_H4_PROGRESS
 		int playerIndex = gta.localPlayerIndex();
 		long register = glPerico(playerIndex).at(1).get();
 		int mask = 1 << 12;
@@ -509,7 +509,7 @@ public class CayoPericoGtaService implements CayoPericoMapService {
 	public void restartSubmarineComputer() {
 		Script script = gta.getScript("heist_island_planning");
 		if ( script == null ) return;
-		script.locals().at(1525).setInt(2);
+		script.locals().at(1542).setInt(2);
 	}
 
 }

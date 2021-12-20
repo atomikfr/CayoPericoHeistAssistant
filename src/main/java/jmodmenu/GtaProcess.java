@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GtaProcess {
 	
-	private final static String 
+	private final static String
 		processName = "GTA5.exe";
 	
 	private final static String
@@ -30,7 +30,7 @@ public class GtaProcess {
 	private PlayerInfo playerInfo;
 	private NetPlayerManager netPlayerManager;
 	private StatManager statManager;
-	private Ptr threadList; 
+	private Ptr threadList;
 	
 	public GtaProcess() {
 		Ptr.logOperationSystemInfo();
@@ -42,7 +42,7 @@ public class GtaProcess {
 		
 		Function<String, Ptr> sigAdd3Rip = signature -> {
 			Ptr ptr = basePointer.findSig(signature)
-					.add(3)		
+					.add(3)
 					.rip();
 			if ( ptr == null ) log.error("Signature {} not found.", signature);
 			return ptr;
@@ -83,12 +83,12 @@ public class GtaProcess {
 	
 	public int localPlayerIndex() {
 		// act_cinema : func_865 !iParam0 == Global_2440049
-		return (int) globals().at(2440277).get();
+		return (int) globals().at(2703656).get();
 	}
 	
 	public int slotNumPlayer() {
 		// heist_island_planning func_6
-		return (int) globals().at(1312763).get();
+		return (int) globals().at(1574907).get();
 	}
 	
 	public NetPlayerManager getNetPlayerManager() {

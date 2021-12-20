@@ -15,7 +15,7 @@ public class StatManager {
 	
 	Supplier<Global> globalSupplier;
 	
-	Global globalStatValue; 
+	Global globalStatValue;
 	Global globalTrigger;
 	Global globalStatIndex;
 	Global globalCheckValue;
@@ -29,11 +29,11 @@ public class StatManager {
 		boolean firstSlot = playerSlot == 0;
 		int playerSlotIndex = firstSlot ? 0 : 1;
 		
-		globalStatValue = global(939452).at(5526);
-		globalTrigger = global(1388013).at(3, 1);
-		globalStatIndex = global(2589761).at(15, 3).at(playerSlotIndex, 1);
-		globalCheckValue = global(2551772).at(276);
-		globalCounter = global(1377236).at(1136);
+		globalStatValue = global(1020252).at(5526);
+		globalTrigger = global(1655444).at(3, 1);
+		globalStatIndex = global(2862239).at(15, 3).at(playerSlotIndex, 1);
+		globalCheckValue = global(2821607).at(276);
+		globalCounter = global(1644209).at(1136);
 		
 		jMPx_AWD_LAPDANCES     = joaat( firstSlot ? "MP0_AWD_LAPDANCES"     : "MP1_AWD_LAPDANCES" );
 		jMPx_LAP_DANCED_BOUGHT = joaat( firstSlot ? "MP0_LAP_DANCED_BOUGHT" : "MP1_LAP_DANCED_BOUGHT" );
@@ -59,7 +59,7 @@ public class StatManager {
 		int loop = 0;
 		int current;
 		globalCounter.set(11L); // accelerate counter loop :)
-		do { 
+		do {
 			current = (int) globalCheckValue.get();
 			if ( current == value ) break;
 			try {
